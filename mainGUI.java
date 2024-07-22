@@ -19,8 +19,13 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.border.LineBorder;
+import java.awt.event.MouseMotionAdapter;
 
 public class mainGUI extends JFrame {
+	
+	int xCursor;
+	int yCursor;
 
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
@@ -50,17 +55,16 @@ public class mainGUI extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 750, 550);
 		mainPanel = new JPanel();
-		mainPanel.setAlignmentY(0.0f);
 		mainPanel.setAlignmentX(0.0f);
 		mainPanel.setBackground(Color.DARK_GRAY);
 		mainPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
 
 		setContentPane(mainPanel);
 		GridBagLayout gbl_mainPanel = new GridBagLayout();
-		gbl_mainPanel.columnWidths = new int[] {30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 87, 30, 30, 30};
-		gbl_mainPanel.rowHeights = new int[]{0, 0};
-		gbl_mainPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0};
-		gbl_mainPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		gbl_mainPanel.columnWidths = new int[] {5, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 87, 30, 30, 30, 0};
+		gbl_mainPanel.rowHeights = new int[]{0, 350, 158, 0, 0};
+		gbl_mainPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0};
+		gbl_mainPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		mainPanel.setLayout(gbl_mainPanel);
 		
 		JButton btnMini = new JButton("\u2014");
@@ -86,6 +90,35 @@ public class mainGUI extends JFrame {
 			}
 		});
 		
+		// Gets the location of the cursor on the window
+		JPanel pnlToolBar = new JPanel();
+		pnlToolBar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				xCursor = e.getX();
+				yCursor = e.getY();
+			}
+		});
+		
+		// Get the location of the mouse on the screen and subtracts the window location from it for accurate movement
+		pnlToolBar.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				int x = e.getXOnScreen();
+				int y = e.getYOnScreen();
+				setLocation(x-xCursor, y-yCursor);
+			}
+		});
+
+		pnlToolBar.setBackground(Color.DARK_GRAY);
+		GridBagConstraints gbc_pnlToolBar = new GridBagConstraints();
+		gbc_pnlToolBar.gridwidth = 17;
+		gbc_pnlToolBar.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlToolBar.fill = GridBagConstraints.BOTH;
+		gbc_pnlToolBar.gridx = 1;
+		gbc_pnlToolBar.gridy = 0;
+		mainPanel.add(pnlToolBar, gbc_pnlToolBar);
+		
 		// Various features of the minimize button
 		
 		btnMini.setFocusPainted(false);
@@ -93,7 +126,7 @@ public class mainGUI extends JFrame {
 		btnMini.setBackground(Color.DARK_GRAY);
 		btnMini.setForeground(Color.WHITE);
 		GridBagConstraints gbc_btnMini = new GridBagConstraints();
-		gbc_btnMini.insets = new Insets(0, 0, 0, 5);
+		gbc_btnMini.insets = new Insets(0, 0, 5, 5);
 		gbc_btnMini.gridx = 18;
 		gbc_btnMini.gridy = 0;
 		mainPanel.add(btnMini, gbc_btnMini);
@@ -135,7 +168,7 @@ public class mainGUI extends JFrame {
 		btnMaxi.setBackground(Color.DARK_GRAY);
 		btnMaxi.setForeground(Color.WHITE);
 		GridBagConstraints gbc_btnMaxi = new GridBagConstraints();
-		gbc_btnMaxi.insets = new Insets(0, 0, 0, 5);
+		gbc_btnMaxi.insets = new Insets(0, 0, 5, 5);
 		gbc_btnMaxi.gridx = 19;
 		gbc_btnMaxi.gridy = 0;
 		mainPanel.add(btnMaxi, gbc_btnMaxi);
@@ -170,9 +203,43 @@ public class mainGUI extends JFrame {
 		btnExit.setBackground(Color.DARK_GRAY);
 		btnExit.setForeground(Color.WHITE);
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.insets = new Insets(0, 0, 5, 5);
 		gbc_btnExit.gridx = 20;
 		gbc_btnExit.gridy = 0;
 		mainPanel.add(btnExit, gbc_btnExit);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.LIGHT_GRAY);
+		panel.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.gridwidth = 17;
+		gbc_panel.insets = new Insets(0, 0, 5, 5);
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = 1;
+		gbc_panel.gridy = 1;
+		mainPanel.add(panel, gbc_panel);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.LIGHT_GRAY);
+		panel_1.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
+		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+		gbc_panel_1.gridwidth = 3;
+		gbc_panel_1.insets = new Insets(0, 0, 5, 5);
+		gbc_panel_1.fill = GridBagConstraints.BOTH;
+		gbc_panel_1.gridx = 18;
+		gbc_panel_1.gridy = 1;
+		mainPanel.add(panel_1, gbc_panel_1);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(Color.LIGHT_GRAY);
+		panel_2.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
+		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
+		gbc_panel_2.gridwidth = 20;
+		gbc_panel_2.insets = new Insets(0, 0, 5, 5);
+		gbc_panel_2.fill = GridBagConstraints.BOTH;
+		gbc_panel_2.gridx = 1;
+		gbc_panel_2.gridy = 2;
+		mainPanel.add(panel_2, gbc_panel_2);
 	}
 
 }
