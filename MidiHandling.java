@@ -8,8 +8,9 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
-import javax.sound.midi.Synthesizer;
 import javax.sound.midi.Transmitter;
+
+import java.util.ArrayList;
 
 public class MidiHandling {
 	
@@ -19,8 +20,8 @@ public class MidiHandling {
 	 */
 	private static final String transmitterName = "default";
 	private static final String transmitterProperties = "javax.sound.midi.Transmitter";
-	private static boolean keyPressed = false;
 	private static Thread keyRepeatThread;
+	private static ArrayList<Integer> activeKeys = new ArrayList<Integer>();
 	// When this function is called it will get the transmitter and synthesizer and await input from the transmitter
 	// It will then display both the note that is pressed and its status as integers
 	public static void run() {
@@ -82,32 +83,21 @@ public class MidiHandling {
 		@Override
 		public void send(MidiMessage message, long timeStamp) {
 			byte[] bytes = message.getMessage();
-			System.out.println("Key pressed: " + byteToInt(bytes[1]) + " ");
-			System.out.println("Status: " + byteToInt(bytes[2]) + " ");
+			//System.out.println("Key pressed: " + byteToInt(bytes[1]) + " ");
+			//System.out.println("Status: " + byteToInt(bytes[2]) + " ");
 			try {
 		        Robot robot = new Robot();
-		        System.out.println("New key pressed");
+		        
+		        if (bytes[2] ==100) {
+		        	activeKeys.add(byteToInt(bytes[1]));
+		        }
+		        else {
+		        	activeKeys.remove(activeKeys.indexOf(byteToInt(bytes[1])));
+		        }
+		        //keyRepeatThread = new Thread(() -> {activeKeys.forEach((n) -> System.out.println("The currently active keys are: " + n));});
 		        // Simulate a mouse click
-		        if (bytes[2] == 100) {
-	                keyRepeatThread = new Thread(() -> {
-	                	System.out.println("Start Thread");
-	                    while (true) {
-	                        robot.keyPress(bytes[1] +28);
-	                        try {
-	                            Thread.sleep(50); // Adjust the repeat rate as necessary
-	                        } catch (InterruptedException e) {
-	                        	break;
-	                        }
-	                    }
-	                });
-	                keyRepeatThread.start();
-	            } else if (bytes[2] == 64) {
-	                if (keyRepeatThread != null) {
-	                	System.out.println("Ending Thread");
-	                    keyRepeatThread.interrupt();
-	                }
-	                robot.keyRelease(bytes[1] + 28);
-	            }
+				keyPressThread k1 = new keyPressThread();
+				k1.start();
 
 
 		} catch (AWTException e) {
@@ -127,6 +117,27 @@ public class MidiHandling {
 		// Convert the byte values to integers to make it easier to develop and understand
 		private int byteToInt(byte b) {
 			return b & 0xff;
+		}
+		
+	}
+	
+	/*
+	 * A thread that will display to the user what keys are currently being pressed down
+	 * This will be replaced with active key presses using the robot class
+	 */
+	
+	private static class keyPressThread extends Thread {
+		
+		public void run() {
+			System.out.println("The currently active keys are: ");
+        	activeKeys.forEach((n) ->
+    			 System.out.print(n + " "));
+            	//robot.keyPress(bytes[1] +28);
+            	try {
+            		Thread.sleep(50); // Adjust the repeat rate as necessary
+            	} catch (InterruptedException e) {
+            		System.out.println("Sleep interrupted");
+            	}
 		}
 		
 	}
