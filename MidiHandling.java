@@ -63,7 +63,7 @@ public class MidiHandling {
 		try {
 			return MidiSystem.getTransmitter();
 		} catch (MidiUnavailableException e) {
-			System.err.println("Error getting transmitter");
+			System.err.println("------------------------------------------------------------\nError getting transmitter, ensure device is connected\n------------------------------------------------------------");
 			e.printStackTrace();
 			return null;
 		}
@@ -86,24 +86,24 @@ public class MidiHandling {
 			System.out.println("Status: " + byteToInt(bytes[2]) + " ");
 			try {
 		        Robot robot = new Robot();
+		        System.out.println("New key pressed");
 		        // Simulate a mouse click
-		        if (bytes[2] == 100 && !keyPressed) {
-	                keyPressed = true;
+		        if (bytes[2] == 100) {
 	                keyRepeatThread = new Thread(() -> {
-	                    while (keyPressed) {
-	                    	System.out.println(bytes[1] + 28);
+	                	System.out.println("Start Thread");
+	                    while (true) {
 	                        robot.keyPress(bytes[1] +28);
 	                        try {
 	                            Thread.sleep(50); // Adjust the repeat rate as necessary
 	                        } catch (InterruptedException e) {
-	                            e.printStackTrace();
+	                        	break;
 	                        }
 	                    }
 	                });
 	                keyRepeatThread.start();
 	            } else if (bytes[2] == 64) {
-	                keyPressed = false;
 	                if (keyRepeatThread != null) {
+	                	System.out.println("Ending Thread");
 	                    keyRepeatThread.interrupt();
 	                }
 	                robot.keyRelease(bytes[1] + 28);
