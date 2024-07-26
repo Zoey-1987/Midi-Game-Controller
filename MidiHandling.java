@@ -92,7 +92,26 @@ public class MidiHandling {
 				activeKeys.add(byteToInt(bytes[1]));
 			}
 			else {
-				robot.keyRelease(byteToInt(bytes[1]) + 28);
+				Integer n = byteToInt(bytes[1]);
+				if (n == 36) {
+					robot.keyRelease(32);
+				}
+				else if (n == 38) {
+					robot.keyRelease(65);
+				}
+				else if (n == 40) {
+					robot.keyRelease(68);
+				}
+				else if (n == 60) {
+					robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+				}
+				else if (n == 64) {
+					robot.mouseRelease(InputEvent.BUTTON2_DOWN_MASK);
+				}
+				else {
+					robot.keyRelease(byteToInt(bytes[1]) + 28);
+				}
+
 				activeKeys.remove(activeKeys.indexOf(byteToInt(bytes[1])));
 			}
 		}
@@ -126,8 +145,24 @@ public class MidiHandling {
 				try {
 					robot = new Robot();
 					for (Integer n : activeKeys) {
-						System.out.println(n+28);
-						robot.keyPress(n + 28);
+						if (n == 36) {
+							robot.keyPress(32);
+						}
+						else if (n == 38) {
+							robot.keyPress(65);
+						}
+						else if (n == 40) {
+							robot.keyPress(68);
+						}
+						else if (n == 60) {
+							robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+						}
+						else if (n == 64) {
+							robot.mousePress(InputEvent.BUTTON2_DOWN_MASK);
+						}
+						else {
+							robot.keyPress(n + 28);
+						}
 					};
 					try {
 						Thread.sleep(50); // Adjust the repeat rate as necessary
