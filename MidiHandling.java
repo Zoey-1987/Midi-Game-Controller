@@ -1,8 +1,12 @@
 import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Robot;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
@@ -11,7 +15,9 @@ import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MidiHandling {
@@ -23,13 +29,23 @@ public class MidiHandling {
 	 */
 	private static final String transmitterName = "default";
 	private static final String transmitterProperties = "javax.sound.midi.Transmitter";
-	private static ArrayList<Integer> activeKeys = new ArrayList<>();
-	private static ArrayList<Integer> keysToRemove = new ArrayList<>();
+	private static List<Integer> activeKeys = new CopyOnWriteArrayList<>();
+	private static List<Integer> keysToRemove = new CopyOnWriteArrayList<>();
 	private static Robot robot;
+
+	// Create an array for the items to be read in from the text document
+	public static String[][] keyControls = new String[9][2];
 
 	// When this function is called it will get the transmitter and await input
 	// It will then display both the note that is pressed and its status as integers
 	public static void run() {
+		keyPressThread.getKeyConfig();
+		try {
+			robot = new Robot();
+		} catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// Get a transmitter and synthesizer from their device names
 		// using system properties or defaults
@@ -132,34 +148,135 @@ public class MidiHandling {
 		public void run() {
 			System.out.println("Starting thread...");
 			while (true) {
+				for (Integer n : activeKeys) {
+					pressKeys();
+				};
 				try {
-					robot = new Robot();
-					for (Integer n : activeKeys) {
-						System.out.println(n);
-					};
-					try {
-						Thread.sleep(50); // Adjust the repeat rate as necessary, 50 seems to be more than responsive enough
-					} catch (InterruptedException e) {
-						System.out.println("Sleep interrupted");
-					}
-					// If there are any keys to remove it will run the appropriate function
-					if (!keysToRemove.isEmpty()) {
-						removeKeys();
-					}
-				} catch (AWTException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Thread.sleep(50); // Adjust the repeat rate as necessary, 50 seems to be more than responsive enough
+				} 
+				catch (InterruptedException e) {
+					System.out.println("Sleep interrupted");
+				}
+				// If there are any keys to remove it will run the appropriate function
+				if (!keysToRemove.isEmpty()) {
+					removeKeys();
 				}
 			}
 		}
-		
+
 		// Function to find each key in the remove keys array, erase it from the main array and clear itself when its done iterating
 		public static void removeKeys() {
 			for (Integer keyNumber : keysToRemove) {
-				int index = activeKeys.indexOf(keyNumber);
-				activeKeys.remove(index);
+				for (int i = 0; i < keyControls.length; i++) {
+					String currentCode = keyControls[i][0];
+					if (currentCode.startsWith(keyNumber.toString())) {
+						int keyCode = Integer.valueOf(keyControls[i][1]);
+						keyHandling(keyCode, false);
+						break;
+					}
+				}
+				activeKeys.remove(keyNumber);
+				keysToRemove.remove(keyNumber);
 			}
-			keysToRemove.clear();
 		}
+
+		// The function responsible for mimicking the appropriate key presses
+		public static void pressKeys() {
+			for (Integer currentKey : activeKeys) { // For each currently pressed key
+				for (int i = 0; i < 9; i++) { // Go through each item in the config
+					boolean keyTrigger = false;
+					String currentCode = keyControls[i][0];
+					// Check if the current activeKey can be found at the start of one of the config numbers
+					if (currentCode.startsWith(currentKey.toString())) {
+						// If one of the config options does start with it, check if its a chord by seeing the length of the string
+						if (currentCode.length() > 2) {
+							// If the code is a chord then it will run the function to check for chords
+							if (isCompleteChord(currentCode, currentKey)) {
+								// When this code runs a full chord has been played, and therefore the program can execute the appropriate input
+								keyTrigger = true;
+							}
+						}
+						else {
+							keyTrigger = true;
+						}
+					}
+					// If a key was triggered and validated then the keyHandling function will activate it (This works for mouse events too!)
+					if (keyTrigger) {
+						int keyCode = Integer.valueOf(keyControls[i][1]);
+						keyHandling(keyCode, true);
+					}
+				}
+			}
+
+		}
+
+		// Function to handle key / mouse presses and releases
+		public static void keyHandling(int keyCode, boolean isPress) {
+			// If the code is above 1000 it is likely a mouse press (I havent found any key presses remotely this high yet)
+			// After determining mouse or key it will use isPress to determine to either raise or lower the key
+			if (keyCode >= 1000) {
+				if (isPress) {
+					robot.mousePress(keyCode);
+				} 
+				else {
+					robot.mouseRelease(keyCode);
+				}
+			} 
+			else {
+				if (isPress) {
+					robot.keyPress(keyCode);
+				} else {
+					robot.keyRelease(keyCode);
+				}
+			}
+		}
+
+		// Function to determine if the detected potential chord is complete to validate the key press
+		private static boolean isCompleteChord(String chord, Integer startKey) {
+			String startKeyStr = startKey.toString();
+			String remainingChord = chord.substring(startKeyStr.length());
+
+			// Convert remaining part of the chord to individual keys contained in a new arraylist
+			List<Integer> remainingKeys = new ArrayList<>();
+			for (int i = 0; i < remainingChord.length(); i += 2) {
+				remainingKeys.add(Integer.parseInt(remainingChord.substring(i, i + 2)));
+			}
+
+			// Check if all remaining keys are currently active
+			return activeKeys.containsAll(remainingKeys);
+		}
+
+		// A function responsible for reading the config file holding keymaps
+		public static Integer[][] getKeyConfig() {
+			// The program will try to open the associated file and will throw an error if it can't be found
+			try {
+				String userDirectory = System.getProperty("user.dir");
+				File myObj = new File(userDirectory + "\\src\\data\\config.txt");
+				Scanner myReader = new Scanner(myObj);
+				int lineNumber = 0; // Keep track of the line number to determine what row of the array it's added to
+				while (myReader.hasNextLine()) {
+					// Reads each line of data, splits it based on the location of the comma
+					// Saves the first value in the first column and the second value in the second column
+					String data = myReader.nextLine();
+					String regex = "[,]";
+					String[] lineData = data.split(regex);
+					keyControls[lineNumber][0] = lineData[0];
+					keyControls[lineNumber][1] = lineData[1];
+					// Increments the line number to move onto the next segment of the array
+					lineNumber++;
+				}
+				myReader.close();
+			} 
+			catch (FileNotFoundException e) {
+				System.err.println("------------------------------------------------------------\nFile not found\n------------------------------------------------------------");
+				e.printStackTrace();
+			}
+
+
+			return null;
+
+		}
+
+
 	}
 }

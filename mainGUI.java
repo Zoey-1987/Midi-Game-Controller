@@ -21,6 +21,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.border.LineBorder;
 import java.awt.event.MouseMotionAdapter;
+import java.io.File;
+
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 
@@ -54,7 +56,8 @@ public class mainGUI extends JFrame {
 	 */
 	public mainGUI() {
 		setUndecorated(true);
-		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\benco\\Downloads\\Solksingcope.png"));
+		String userDirectory = System.getProperty("user.dir");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(userDirectory + "\\src\\data\\ZoeyCopeNoBG.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 750, 550);
 		mainPanel = new JPanel();
