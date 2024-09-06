@@ -14,9 +14,14 @@ import javax.swing.JToolBar;
 import java.awt.GridBagConstraints;
 import javax.swing.JButton;
 import java.awt.Insets;
+import java.awt.Rectangle;
+
 import javax.swing.border.MatteBorder;
+import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.border.LineBorder;
@@ -26,8 +31,20 @@ import java.io.File;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class mainGUI extends JFrame {
 	
+    private List<Rectangle> rectangles = new ArrayList<>();
+    private int rectWidth = 18;
+    private int rectHeight = 120;
+    private int x = 0;
+    private int y = 0;
+    private Image keyboardImage;
+
 	int xCursor;
 	int yCursor;
 
@@ -58,6 +75,7 @@ public class mainGUI extends JFrame {
 		setUndecorated(true);
 		String userDirectory = System.getProperty("user.dir");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(userDirectory + "\\src\\data\\ZoeyCopeNoBG.png"));
+		keyboardImage = new ImageIcon(userDirectory + "\\src\\data\\keyboard.png").getImage();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 750, 550);
 		mainPanel = new JPanel();
@@ -72,13 +90,13 @@ public class mainGUI extends JFrame {
 		gbl_mainPanel.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		gbl_mainPanel.rowWeights = new double[]{0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
 		mainPanel.setLayout(gbl_mainPanel);
-		
+
 		JButton btnMini = new JButton("\u2014");
-		
+
 		/* 
 		 * This section of code is dedicated to the minimize button of the GUI
 		 */
-		
+
 		// Listeners to activate when the mouse hovers over or exits the minimize button
 		btnMini.addMouseListener(new MouseAdapter() {
 			@Override
@@ -89,13 +107,13 @@ public class mainGUI extends JFrame {
 			public void mouseExited(MouseEvent e) {
 				btnMini.setBackground(Color.DARK_GRAY);
 			}
-		// Minimize the GUI when clicked
+			// Minimize the GUI when clicked
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				setState(JFrame.ICONIFIED);
 			}
 		});
-		
+
 		// Gets the location of the cursor on the window
 		JPanel pnlToolBar = new JPanel();
 		pnlToolBar.addMouseListener(new MouseAdapter() {
@@ -105,7 +123,7 @@ public class mainGUI extends JFrame {
 				yCursor = e.getY();
 			}
 		});
-		
+
 		// Get the location of the mouse on the screen and subtracts the window location from it for accurate movement
 		pnlToolBar.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
@@ -124,9 +142,9 @@ public class mainGUI extends JFrame {
 		gbc_pnlToolBar.gridx = 1;
 		gbc_pnlToolBar.gridy = 0;
 		mainPanel.add(pnlToolBar, gbc_pnlToolBar);
-		
+
 		// Various features of the minimize button
-		
+
 		btnMini.setFocusPainted(false);
 		btnMini.setBorder(new EmptyBorder(5, 15, 5, 15));
 		btnMini.setBackground(Color.DARK_GRAY);
@@ -136,13 +154,13 @@ public class mainGUI extends JFrame {
 		gbc_btnMini.gridx = 18;
 		gbc_btnMini.gridy = 0;
 		mainPanel.add(btnMini, gbc_btnMini);
-		
+
 		JButton btnMaxi = new JButton("\uD83D\uDDD6");
-		
+
 		/* 
 		 * This section of code is dedicated to the maximize button of the GUI
 		 */
-		
+
 		// Listeners to activate when the mouse hovers over or exits the maximize button
 		btnMaxi.addMouseListener(new MouseAdapter() {
 			@Override
@@ -153,7 +171,7 @@ public class mainGUI extends JFrame {
 			public void mouseExited(MouseEvent e) {
 				btnMaxi.setBackground(Color.DARK_GRAY);
 			}
-		// Listens for mouse press on maximize button
+			// Listens for mouse press on maximize button
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (btnMaxi.getText() == "🗖") {
@@ -166,9 +184,9 @@ public class mainGUI extends JFrame {
 				}
 			}
 		});
-		
+
 		// Various features of the maximize button
-		
+
 		btnMaxi.setFocusPainted(false);
 		btnMaxi.setBorder(new EmptyBorder(5, 15, 5, 15));
 		btnMaxi.setBackground(Color.DARK_GRAY);
@@ -178,13 +196,13 @@ public class mainGUI extends JFrame {
 		gbc_btnMaxi.gridx = 19;
 		gbc_btnMaxi.gridy = 0;
 		mainPanel.add(btnMaxi, gbc_btnMaxi);
-		
+
 		JButton btnExit = new JButton("\u2716");
-		
+
 		/* 
 		 * This section of code is dedicated to the exit button of the GUI
 		 */
-		
+
 		// Listeners to activate when the mouse hovers over or exits the exit button
 		btnExit.addMouseListener(new MouseAdapter() {
 			@Override
@@ -195,16 +213,16 @@ public class mainGUI extends JFrame {
 			public void mouseExited(MouseEvent e) {
 				btnExit.setBackground(Color.DARK_GRAY);
 			}
-		// Listener for clicking the exit button
+			// Listener for clicking the exit button
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				dispose();
 				System.exit(0);
 			}
 		});
-		
+
 		// Various features of the exit button
-		
+
 		btnExit.setFocusPainted(false);
 		btnExit.setBorder(new EmptyBorder(5, 15, 5, 15));
 		btnExit.setBackground(Color.DARK_GRAY);
@@ -214,7 +232,7 @@ public class mainGUI extends JFrame {
 		gbc_btnExit.gridx = 20;
 		gbc_btnExit.gridy = 0;
 		mainPanel.add(btnExit, gbc_btnExit);
-		
+
 		JPanel pnlMain = new JPanel();
 		pnlMain.setBackground(Color.LIGHT_GRAY);
 		pnlMain.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
@@ -225,7 +243,7 @@ public class mainGUI extends JFrame {
 		gbc_pnlMain.gridx = 1;
 		gbc_pnlMain.gridy = 1;
 		mainPanel.add(pnlMain, gbc_pnlMain);
-		
+
 		JPanel pnlOptions = new JPanel();
 		pnlOptions.setBackground(Color.LIGHT_GRAY);
 		pnlOptions.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
@@ -236,21 +254,60 @@ public class mainGUI extends JFrame {
 		gbc_pnlOptions.gridx = 18;
 		gbc_pnlOptions.gridy = 1;
 		mainPanel.add(pnlOptions, gbc_pnlOptions);
-		
-		JPanel pnlKeyboard = new JPanel();
-		pnlKeyboard.setBackground(Color.LIGHT_GRAY);
+
+		// I need to add the code to simply draw rectangles here to test functionality + practicality
+		// Inner class for custom drawing and key handling
+        DrawingPanel pnlKeyboard = new DrawingPanel();
+        pnlKeyboard.setBackground(Color.LIGHT_GRAY);
 		pnlKeyboard.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
 		GridBagConstraints gbc_pnlKeyboard = new GridBagConstraints();
 		gbc_pnlKeyboard.gridwidth = 20;
 		gbc_pnlKeyboard.insets = new Insets(0, 0, 5, 5);
-		gbc_pnlKeyboard.fill = GridBagConstraints.BOTH;
 		gbc_pnlKeyboard.gridx = 1;
 		gbc_pnlKeyboard.gridy = 2;
 		mainPanel.add(pnlKeyboard, gbc_pnlKeyboard);
-		
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\benco\\Downloads\\keyboard.jpg"));
-		pnlKeyboard.add(lblNewLabel);
-	}
 
+        setVisible(true);
+
+        // Requesting focus because otherwise it wont be able to accept key events (I think)
+        pnlKeyboard.requestFocusInWindow();
+    }
+	
+	class DrawingPanel extends JPanel {
+		public DrawingPanel() {
+			setPreferredSize(new Dimension(648,120));
+			// A key listener temporarily set to just detect a space press so I can determine the size of the gaps between keys
+			// When the space key is pressed it will draw over the next key on the keyboard
+			addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+						// Add a new rectangle to the list
+						rectangles.add(new Rectangle(x, y, rectWidth, rectHeight));
+						// Update coordinates for the next rectangle
+						x += rectWidth + 0;
+						if (x + rectWidth > getWidth()) {
+							x = 0;
+							y += rectHeight + 0;
+						}
+						repaint();  // Repaint the panel to draw the new rectangle
+					}
+				}
+			});
+			setFocusable(true);
+		}
+
+		@Override
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			g.drawImage(keyboardImage, 0, 0, getWidth(), getHeight(), this);
+
+            // Draw all rectangles in the list
+            g.setColor(Color.BLUE);
+            for (Rectangle rect : rectangles) {
+                g.fillRect(rect.x, rect.y, rect.width, rect.height);
+            }
+        }
+
+	}
 }
