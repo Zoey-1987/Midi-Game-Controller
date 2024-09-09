@@ -34,17 +34,15 @@ import javax.swing.ImageIcon;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class mainGUI extends JFrame {
-	
-    private List<Rectangle> rectangles = new ArrayList<>();
-    private int rectWidth = 18;
-    private int rectHeight = 120;
-    private int x = 0;
-    private int y = 0;
-    private Image keyboardImage;
-
+	// A list of each number on a 61 keyed keyboard that is linked to a white key
+	private int[] whiteKeys = {36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96};
+	// Gets the user directory to allow for images that don't have an absolute path
+	String userDirectory = System.getProperty("user.dir");
+	// Variables for moving the window
 	int xCursor;
 	int yCursor;
 
@@ -73,9 +71,7 @@ public class mainGUI extends JFrame {
 	 */
 	public mainGUI() {
 		setUndecorated(true);
-		String userDirectory = System.getProperty("user.dir");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(userDirectory + "\\src\\data\\ZoeyCopeNoBG.png"));
-		keyboardImage = new ImageIcon(userDirectory + "\\src\\data\\keyboard.png").getImage();
+		setIconImage(Toolkit.getDefaultToolkit().getImage(userDirectory + "\\src\\data\\SkongCope.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 750, 550);
 		mainPanel = new JPanel();
@@ -257,8 +253,8 @@ public class mainGUI extends JFrame {
 
 		// I need to add the code to simply draw rectangles here to test functionality + practicality
 		// Inner class for custom drawing and key handling
-        DrawingPanel pnlKeyboard = new DrawingPanel();
-        pnlKeyboard.setBackground(Color.LIGHT_GRAY);
+		DrawingPanel pnlKeyboard = new DrawingPanel();
+		pnlKeyboard.setBackground(Color.LIGHT_GRAY);
 		pnlKeyboard.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
 		GridBagConstraints gbc_pnlKeyboard = new GridBagConstraints();
 		gbc_pnlKeyboard.gridwidth = 20;
@@ -267,47 +263,139 @@ public class mainGUI extends JFrame {
 		gbc_pnlKeyboard.gridy = 2;
 		mainPanel.add(pnlKeyboard, gbc_pnlKeyboard);
 
-        setVisible(true);
+		setVisible(true);
 
-        // Requesting focus because otherwise it wont be able to accept key events (I think)
-        pnlKeyboard.requestFocusInWindow();
-    }
-	
+		// Requesting focus because otherwise it wont be able to accept key events (I think)
+		pnlKeyboard.requestFocusInWindow();
+		DrawingThread thread = new DrawingThread(pnlKeyboard);
+		thread.start();
+	}
+
 	class DrawingPanel extends JPanel {
+		private List<Rectangle> whiteRectangles = new ArrayList<>();  // Initialize the list of white rectangles
+		private List<Rectangle> blackRectangles = new ArrayList<>();  // Initialize the list of black rectangles
+		private Image keyboardImage;
+
 		public DrawingPanel() {
-			setPreferredSize(new Dimension(648,120));
-			// A key listener temporarily set to just detect a space press so I can determine the size of the gaps between keys
-			// When the space key is pressed it will draw over the next key on the keyboard
-			addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyPressed(KeyEvent e) {
-					if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-						// Add a new rectangle to the list
-						rectangles.add(new Rectangle(x, y, rectWidth, rectHeight));
-						// Update coordinates for the next rectangle
-						x += rectWidth + 0;
-						if (x + rectWidth > getWidth()) {
-							x = 0;
-							y += rectHeight + 0;
-						}
-						repaint();  // Repaint the panel to draw the new rectangle
-					}
-				}
-			});
+			setPreferredSize(new Dimension(648, 120));
 			setFocusable(true);
+		}
+
+		// Add a white rectangle to the list
+		public void addWhiteRectangle(Rectangle rect) {
+			whiteRectangles.add(rect);
+		}
+
+		// Add a black rectangle to the list
+		public void addBlackRectangle(Rectangle rect) {
+			blackRectangles.add(rect);
+		}
+
+		// Clear all rectangles (to update for new keys)
+		public void clearRectangles() {
+			whiteRectangles.clear();
+			blackRectangles.clear();
 		}
 
 		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
+			keyboardImage = new ImageIcon(userDirectory + "\\src\\data\\keyboard.png").getImage();
 			g.drawImage(keyboardImage, 0, 0, getWidth(), getHeight(), this);
 
-            // Draw all rectangles in the list
-            g.setColor(Color.BLUE);
-            for (Rectangle rect : rectangles) {
-                g.fillRect(rect.x, rect.y, rect.width, rect.height);
-            }
-        }
+			// Draw all rectangles in the list
+			for (Rectangle rect : whiteRectangles) {
+				g.setColor(Color.LIGHT_GRAY);
+				// Draw the rectangle
 
+				g.fillRect(rect.x, rect.y, rect.width, rect.height);
+			}
+			for (Rectangle rect : blackRectangles) {
+				g.setColor(Color.BLACK);
+				// Draw the rectangle
+				g.fillRect(rect.x, rect.y, rect.width, rect.height);
+			}
+		}
 	}
+
+
+	class DrawingThread extends Thread {
+		private DrawingPanel panel;
+		private boolean hasLeft;
+		private boolean hasRight;
+
+		public DrawingThread(DrawingPanel panel) {
+			this.panel = panel;  // Pass the DrawingPanel to the thread
+		}
+
+		public boolean getLeft() {
+			return this.hasLeft;
+		}
+
+		public boolean getRight() {
+			return this.hasRight;
+		}
+
+		public void setLeft(boolean left) {
+			this.hasLeft = left;
+		}
+
+		public void setRight(boolean right) {
+			this.hasRight = right;
+		}
+
+		public void run() {
+			// A list of each number on a 61 keyed keyboard linked to a black key
+			// This list is a double and uses decimels to essentially insert gaps into the rectangles drawing as black keys aren't ordered as simply as white
+			// I'm sure this isn't the most efficient solution, but it works soooo
+			double[] blackKeys = {37, 39, 39.5, 42, 44, 46, 46.5, 49, 51, 51.5, 54, 56, 58, 58.5, 61, 63, 63.5, 66, 68, 70, 70.5, 73, 75, 75.5, 78, 80, 82, 82.5, 85, 87, 87.5, 90, 92, 94};
+
+			while (true) {  // Continuous loop to check for key presses
+				List<Integer> activeKeys = MidiHandling.DisplayReceiver.getActiveKeys();
+
+				// Clear existing rectangles
+				panel.clearRectangles();
+
+				for (Integer currentKey : activeKeys) { // For each currently pressed key
+					int whiteKeyIndex = Arrays.binarySearch(whiteKeys, currentKey);
+					int blackKeyIndex = Arrays.binarySearch(blackKeys, currentKey);
+					int previousKey;
+					int nextKey;
+					if (whiteKeyIndex >= 0) {
+						// If its the first key in the list it won't have a previous key
+						if (currentKey == 36) {
+							previousKey = -1;
+						} else {
+							previousKey = whiteKeys[whiteKeyIndex - 1];
+						}
+						// If its the last key in the list it won't have a next key
+						if (currentKey == 96) {
+							nextKey = -1;
+						} else {
+							nextKey = whiteKeys[whiteKeyIndex + 1];
+						}
+						// Draw a white key
+						panel.addWhiteRectangle(new Rectangle(whiteKeyIndex * 18, 0, 18, 120));
+						if (previousKey == currentKey - 2) {
+							panel.addBlackRectangle(new Rectangle((whiteKeyIndex - 1) * 18 + 12, 0, 12, 69));
+						}
+						if (nextKey == currentKey + 2) {
+							panel.addBlackRectangle(new Rectangle((whiteKeyIndex) * 18 + 12, 0, 12, 69));
+						}
+					} else if (blackKeyIndex >= 0) {
+						// Draw a black key slightly offset
+						panel.addBlackRectangle(new Rectangle(blackKeyIndex * 18 + 12, 0, 12, 73));
+					}
+				}
+				panel.repaint();  // Repaint the panel to reflect new active keys
+
+				try {
+					Thread.sleep(100);  // Update every 100 milliseconds
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 }
