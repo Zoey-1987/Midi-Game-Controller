@@ -1,21 +1,17 @@
 import java.awt.AWTException;
-import java.awt.MouseInfo;
 import java.awt.Robot;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
+import javax.swing.JOptionPane;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -88,8 +84,8 @@ public class MidiHandling {
 		try {
 			return MidiSystem.getTransmitter();
 		} catch (MidiUnavailableException e) {
-			System.err.println("------------------------------------------------------------\nError getting transmitter, ensure device is connected\n------------------------------------------------------------");
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Can't locate a midi device, ensure it is properly connected", "Device Unavaliable", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 			return null;
 		}
 	}
@@ -100,7 +96,7 @@ public class MidiHandling {
 	 * using their ASCII values. This class adds the key presses to an arraylist and a seperate thread handles the input of 
 	 * all the keys currently pressed.
 	 */
-	private static class DisplayReceiver implements Receiver {
+	public static class DisplayReceiver implements Receiver {
 		// Establish a receiver
 		private Receiver receiver;
 
@@ -114,6 +110,7 @@ public class MidiHandling {
 			byte[] bytes = message.getMessage();
 			// If the action detected is a keypress add it to activeKeys
 			if (bytes[2] == 100) {
+				System.out.println("Key number: " + bytes[1]);
 				activeKeys.add(byteToInt(bytes[1]));
 			}
 			// If the action detected is a key being raised then it is added to keysToRemove
@@ -124,6 +121,10 @@ public class MidiHandling {
 			else {
 				System.out.println("Error: Unfamiliar Keystroke Detected");
 			}
+		}
+		
+		public static List<Integer> getActiveKeys() {
+			return activeKeys;
 		}
 
 		// When the program is exited the receiver is closed to free up resources
@@ -217,7 +218,7 @@ public class MidiHandling {
 			if (keyCode >= 1000) {
 				if (isPress) {
 					robot.mousePress(keyCode);
-				} 
+					System.out.println("Mouse has been pressed");				} 
 				else {
 					robot.mouseRelease(keyCode);
 				}
