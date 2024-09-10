@@ -27,6 +27,7 @@ public class MidiHandling {
 	private static final String transmitterProperties = "javax.sound.midi.Transmitter";
 	private static List<Integer> activeKeys = new CopyOnWriteArrayList<>();
 	private static List<Integer> keysToRemove = new CopyOnWriteArrayList<>();
+	private static List<Integer> pressedKeys = new CopyOnWriteArrayList<>();
 	private static Robot robot;
 
 	// Create an array for the items to be read in from the text document
@@ -108,21 +109,22 @@ public class MidiHandling {
 		@Override
 		public void send(MidiMessage message, long timeStamp) {
 			byte[] bytes = message.getMessage();
+			int key = byteToInt(bytes[1]);
 			// If the action detected is a keypress add it to activeKeys
-			if (bytes[2] == 100) {
-				System.out.println("Key number: " + bytes[1]);
-				activeKeys.add(byteToInt(bytes[1]));
+			if (bytes[2] == 100 && !activeKeys.contains(key)) {
+				System.out.println("Key number: " + key);
+				activeKeys.add(key);
 			}
 			// If the action detected is a key being raised then it is added to keysToRemove
 			else if (bytes[2] == 64) {
-				keysToRemove.add(byteToInt(bytes[1]));
+				keysToRemove.add(key);
 			}
 			// If the action detected is neither an error message is output
 			else {
 				System.out.println("Error: Unfamiliar Keystroke Detected");
 			}
 		}
-		
+
 		public static List<Integer> getActiveKeys() {
 			return activeKeys;
 		}
@@ -176,40 +178,44 @@ public class MidiHandling {
 						break;
 					}
 				}
-				activeKeys.remove(keyNumber);
-				keysToRemove.remove(keyNumber);
+				activeKeys.remove(keyNumber); // Remove the key from activeKeys
+				pressedKeys.remove(keyNumber); // Remove the key from pressedKeys
+				keysToRemove.remove(keyNumber); // Remove the key from keysToRemove
 			}
 		}
 
 		// The function responsible for mimicking the appropriate key presses
 		public static void pressKeys() {
 			for (Integer currentKey : activeKeys) { // For each currently pressed key
-				for (int i = 0; i < 9; i++) { // Go through each item in the config
-					boolean keyTrigger = false;
-					String currentCode = keyControls[i][0];
-					// Check if the current activeKey can be found at the start of one of the config numbers
-					if (currentCode.startsWith(currentKey.toString())) {
-						// If one of the config options does start with it, check if its a chord by seeing the length of the string
-						if (currentCode.length() > 2) {
-							// If the code is a chord then it will run the function to check for chords
-							if (isCompleteChord(currentCode, currentKey)) {
-								// When this code runs a full chord has been played, and therefore the program can execute the appropriate input
+				if (!pressedKeys.contains(currentKey)) {
+					for (int i = 0; i < 9; i++) { // Go through each item in the config
+						boolean keyTrigger = false;
+						String currentCode = keyControls[i][0];
+						// Check if the current activeKey can be found at the start of one of the config numbers
+						if (currentCode.startsWith(currentKey.toString())) {
+							// If one of the config options does start with it, check if its a chord by seeing the length of the string
+							if (currentCode.length() > 2) {
+								// If the code is a chord then it will run the function to check for chords
+								if (isCompleteChord(currentCode, currentKey)) {
+									// When this code runs a full chord has been played, and therefore the program can execute the appropriate input
+									keyTrigger = true;
+								}
+							} else {
 								keyTrigger = true;
 							}
 						}
-						else {
-							keyTrigger = true;
+						// If a key was triggered and validated then the keyHandling function will activate it (This works for mouse events too!)
+						if (keyTrigger) {
+							int keyCode = Integer.valueOf(keyControls[i][1]);
+							keyHandling(keyCode, true);
+							pressedKeys.add(currentKey);
 						}
-					}
-					// If a key was triggered and validated then the keyHandling function will activate it (This works for mouse events too!)
-					if (keyTrigger) {
-						int keyCode = Integer.valueOf(keyControls[i][1]);
-						keyHandling(keyCode, true);
 					}
 				}
 			}
 
 		}
+
 
 		// Function to handle key / mouse presses and releases
 		public static void keyHandling(int keyCode, boolean isPress) {
@@ -217,9 +223,8 @@ public class MidiHandling {
 			// After determining mouse or key it will use isPress to determine to either raise or lower the key
 			if (keyCode >= 1000) {
 				if (isPress) {
-					robot.mousePress(keyCode);
-					System.out.println("Mouse has been pressed");				} 
-				else {
+					robot.mousePress(keyCode);			
+				} else {
 					robot.mouseRelease(keyCode);
 				}
 			} 
@@ -231,6 +236,7 @@ public class MidiHandling {
 				}
 			}
 		}
+
 
 		// Function to determine if the detected potential chord is complete to validate the key press
 		private static boolean isCompleteChord(String chord, Integer startKey) {
