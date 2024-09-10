@@ -239,6 +239,11 @@ public class mainGUI extends JFrame {
 		gbc_pnlMain.gridx = 1;
 		gbc_pnlMain.gridy = 1;
 		mainPanel.add(pnlMain, gbc_pnlMain);
+		
+		JLabel lblNewLabel = new JLabel("");
+		ImageIcon qwerty = new ImageIcon(userDirectory + "\\src\\data\\qwerty.png");
+		lblNewLabel.setIcon(qwerty);
+		pnlMain.add(lblNewLabel);
 
 		JPanel pnlOptions = new JPanel();
 		pnlOptions.setBackground(Color.LIGHT_GRAY);
@@ -277,7 +282,7 @@ public class mainGUI extends JFrame {
 		private Image keyboardImage;
 
 		public DrawingPanel() {
-			setPreferredSize(new Dimension(648, 120));
+			setPreferredSize(new Dimension(720, 133));
 			setFocusable(true);
 		}
 
@@ -375,16 +380,16 @@ public class mainGUI extends JFrame {
 							nextKey = whiteKeys[whiteKeyIndex + 1];
 						}
 						// Draw a white key
-						panel.addWhiteRectangle(new Rectangle(whiteKeyIndex * 18, 0, 18, 120));
+						panel.addWhiteRectangle(new Rectangle(whiteKeyIndex * 20, 0, 20, 133));
 						if (previousKey == currentKey - 2) {
-							panel.addBlackRectangle(new Rectangle((whiteKeyIndex - 1) * 18 + 12, 0, 12, 69));
+							panel.addBlackRectangle(new Rectangle((whiteKeyIndex - 1) * 20 + 13, 0, 14, 77));
 						}
 						if (nextKey == currentKey + 2) {
-							panel.addBlackRectangle(new Rectangle((whiteKeyIndex) * 18 + 12, 0, 12, 69));
+							panel.addBlackRectangle(new Rectangle((whiteKeyIndex) * 20 + 13, 0, 14, 77));
 						}
 					} else if (blackKeyIndex >= 0) {
 						// Draw a black key slightly offset
-						panel.addBlackRectangle(new Rectangle(blackKeyIndex * 18 + 12, 0, 12, 73));
+						panel.addBlackRectangle(new Rectangle(blackKeyIndex * 20 + 13, 0, 14, 81));
 					}
 				}
 				panel.repaint();  // Repaint the panel to reflect new active keys
