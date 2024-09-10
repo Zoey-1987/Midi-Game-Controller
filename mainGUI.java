@@ -364,8 +364,16 @@ public class mainGUI extends JFrame {
 				for (Integer currentKey : activeKeys) { // For each currently pressed key
 					int whiteKeyIndex = Arrays.binarySearch(whiteKeys, currentKey);
 					int blackKeyIndex = Arrays.binarySearch(blackKeys, currentKey);
-					int previousKey;
-					int nextKey;
+					int previousKey, nextKey, whiteKeyWidth, blackKeyWidth, whiteKeyHeight, blackKeyHeightSmall, blackKeyHeightLarge, blackWhiteGap;
+					
+					// I added all these just to make it really easy to change the sizes of rectangles in case I rescale the GUI again.
+					// This is because I intend to develop this application to always be a set size and to not be full screened.
+					whiteKeyWidth = 20;
+					blackKeyWidth = 14;
+					whiteKeyHeight = 133;
+					blackKeyHeightSmall = 77;
+					blackKeyHeightLarge = 81;
+					blackWhiteGap = whiteKeyWidth - (blackKeyWidth / 2);
 					if (whiteKeyIndex >= 0) {
 						// If its the first key in the list it won't have a previous key
 						if (currentKey == 36) {
@@ -380,16 +388,16 @@ public class mainGUI extends JFrame {
 							nextKey = whiteKeys[whiteKeyIndex + 1];
 						}
 						// Draw a white key
-						panel.addWhiteRectangle(new Rectangle(whiteKeyIndex * 20, 0, 20, 133));
+						panel.addWhiteRectangle(new Rectangle(whiteKeyIndex * whiteKeyWidth, 0, whiteKeyWidth, whiteKeyHeight));
 						if (previousKey == currentKey - 2) {
-							panel.addBlackRectangle(new Rectangle((whiteKeyIndex - 1) * 20 + 13, 0, 14, 77));
+							panel.addBlackRectangle(new Rectangle((whiteKeyIndex - 1) * whiteKeyWidth + blackWhiteGap, 0, blackKeyWidth, blackKeyHeightSmall));
 						}
 						if (nextKey == currentKey + 2) {
-							panel.addBlackRectangle(new Rectangle((whiteKeyIndex) * 20 + 13, 0, 14, 77));
+							panel.addBlackRectangle(new Rectangle((whiteKeyIndex) * whiteKeyWidth + blackWhiteGap, 0, blackKeyWidth, blackKeyHeightSmall));
 						}
 					} else if (blackKeyIndex >= 0) {
 						// Draw a black key slightly offset
-						panel.addBlackRectangle(new Rectangle(blackKeyIndex * 20 + 13, 0, 14, 81));
+						panel.addBlackRectangle(new Rectangle(blackKeyIndex * whiteKeyWidth + blackWhiteGap, 0, blackKeyWidth, blackKeyHeightLarge));
 					}
 				}
 				panel.repaint();  // Repaint the panel to reflect new active keys
