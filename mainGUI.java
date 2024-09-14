@@ -36,6 +36,10 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class mainGUI extends JFrame {
 	// A list of each number on a 61 keyed keyboard that is linked to a white key
@@ -45,6 +49,9 @@ public class mainGUI extends JFrame {
 	// Variables for moving the window
 	int xCursor;
 	int yCursor;
+	
+	static JTextArea txtInputName;
+	JTextArea txtInputStatus;
 
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
@@ -59,6 +66,7 @@ public class mainGUI extends JFrame {
 					mainGUI frame = new mainGUI();
 					frame.setVisible(true);
 					MidiHandling.run();
+					System.out.println(KeyCodeMapper.getKeyFromCode(1024));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -239,11 +247,40 @@ public class mainGUI extends JFrame {
 		gbc_pnlMain.gridx = 1;
 		gbc_pnlMain.gridy = 1;
 		mainPanel.add(pnlMain, gbc_pnlMain);
+		SpringLayout sl_pnlMain = new SpringLayout();
+		pnlMain.setLayout(sl_pnlMain);
 		
-		JLabel lblNewLabel = new JLabel("");
-		ImageIcon qwerty = new ImageIcon(userDirectory + "\\src\\data\\qwerty.png");
-		lblNewLabel.setIcon(qwerty);
-		pnlMain.add(lblNewLabel);
+		JLabel lblInputName = new JLabel("Input");
+		sl_pnlMain.putConstraint(SpringLayout.WEST, lblInputName, 16, SpringLayout.WEST, pnlMain);
+		sl_pnlMain.putConstraint(SpringLayout.SOUTH, lblInputName, -315, SpringLayout.SOUTH, pnlMain);
+		pnlMain.add(lblInputName);
+		
+		
+		
+		txtInputName = new JTextArea();
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, txtInputName, 6, SpringLayout.SOUTH, lblInputName);
+		sl_pnlMain.putConstraint(SpringLayout.WEST, txtInputName, 16, SpringLayout.WEST, pnlMain);
+		sl_pnlMain.putConstraint(SpringLayout.SOUTH, txtInputName, -13, SpringLayout.SOUTH, pnlMain);
+		sl_pnlMain.putConstraint(SpringLayout.EAST, txtInputName, 159, SpringLayout.WEST, pnlMain);
+		pnlMain.add(txtInputName);
+		
+		JLabel lblInputStatus = new JLabel("Status");
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblInputStatus, 10, SpringLayout.NORTH, pnlMain);
+		sl_pnlMain.putConstraint(SpringLayout.WEST, lblInputStatus, 152, SpringLayout.EAST, lblInputName);
+		pnlMain.add(lblInputStatus);
+		
+		txtInputStatus = new JTextArea();
+		sl_pnlMain.putConstraint(SpringLayout.EAST, txtInputStatus, 319, SpringLayout.WEST, lblInputStatus);
+		txtInputStatus.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				//txtInputStatus.insert(e, 0);
+			}
+		});
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, txtInputStatus, 30, SpringLayout.NORTH, pnlMain);
+		sl_pnlMain.putConstraint(SpringLayout.SOUTH, txtInputStatus, -13, SpringLayout.SOUTH, pnlMain);
+		sl_pnlMain.putConstraint(SpringLayout.WEST, txtInputStatus, 0, SpringLayout.WEST, lblInputStatus);
+		pnlMain.add(txtInputStatus);
 
 		JPanel pnlOptions = new JPanel();
 		pnlOptions.setBackground(Color.LIGHT_GRAY);
@@ -274,6 +311,10 @@ public class mainGUI extends JFrame {
 		pnlKeyboard.requestFocusInWindow();
 		DrawingThread thread = new DrawingThread(pnlKeyboard);
 		thread.start();
+		}
+	
+	public static void insertText(String text) {
+		txtInputName.insert(text + "\n", 0);
 	}
 
 	class DrawingPanel extends JPanel {
@@ -410,5 +451,63 @@ public class mainGUI extends JFrame {
 			}
 		}
 	}
-
+	
+	// I don't believe KeyEvents have a built in function to convert from the code to the *thing* they represent by default
+	// This hashmap is used to store all events and their *thing*, with a function to convert them
+	class KeyCodeMapper {
+		private static final Map<Integer, String> keyCodeMap = new HashMap<>();
+		static {
+			keyCodeMap.put(KeyEvent.VK_0, "0");
+			keyCodeMap.put(KeyEvent.VK_1, "1");
+			keyCodeMap.put(KeyEvent.VK_2, "2");
+			keyCodeMap.put(KeyEvent.VK_3, "3");
+			keyCodeMap.put(KeyEvent.VK_4, "4");
+			keyCodeMap.put(KeyEvent.VK_5, "5");
+			keyCodeMap.put(KeyEvent.VK_6, "6");
+			keyCodeMap.put(KeyEvent.VK_7, "7");
+			keyCodeMap.put(KeyEvent.VK_8, "8");
+			keyCodeMap.put(KeyEvent.VK_9, "9");
+			keyCodeMap.put(KeyEvent.VK_A, "A");
+	        keyCodeMap.put(KeyEvent.VK_B, "B");
+	        keyCodeMap.put(KeyEvent.VK_C, "C");
+	        keyCodeMap.put(KeyEvent.VK_D, "D");
+	        keyCodeMap.put(KeyEvent.VK_E, "E");
+	        keyCodeMap.put(KeyEvent.VK_F, "F");
+	        keyCodeMap.put(KeyEvent.VK_G, "G");
+	        keyCodeMap.put(KeyEvent.VK_H, "H");
+	        keyCodeMap.put(KeyEvent.VK_I, "I");
+	        keyCodeMap.put(KeyEvent.VK_J, "J");
+	        keyCodeMap.put(KeyEvent.VK_K, "K");
+	        keyCodeMap.put(KeyEvent.VK_L, "L");
+	        keyCodeMap.put(KeyEvent.VK_M, "M");
+	        keyCodeMap.put(KeyEvent.VK_N, "N");
+	        keyCodeMap.put(KeyEvent.VK_O, "O");
+	        keyCodeMap.put(KeyEvent.VK_P, "P");
+	        keyCodeMap.put(KeyEvent.VK_Q, "Q");
+	        keyCodeMap.put(KeyEvent.VK_R, "R");
+	        keyCodeMap.put(KeyEvent.VK_S, "S");
+	        keyCodeMap.put(KeyEvent.VK_T, "T");
+	        keyCodeMap.put(KeyEvent.VK_U, "U");
+	        keyCodeMap.put(KeyEvent.VK_V, "V");
+	        keyCodeMap.put(KeyEvent.VK_W, "W");
+	        keyCodeMap.put(KeyEvent.VK_X, "X");
+	        keyCodeMap.put(KeyEvent.VK_Y, "Y");
+	        keyCodeMap.put(KeyEvent.VK_Z, "Z");
+	        keyCodeMap.put(KeyEvent.VK_SPACE, "Space");
+	        keyCodeMap.put(KeyEvent.VK_ENTER, "Enter");
+	        keyCodeMap.put(KeyEvent.VK_SHIFT, "Shift");
+	        keyCodeMap.put(KeyEvent.VK_CONTROL, "Ctrl");
+	        keyCodeMap.put(KeyEvent.VK_ALT, "Alt");
+	        keyCodeMap.put(KeyEvent.VK_BACK_SPACE, "Backspace");
+	        keyCodeMap.put(KeyEvent.VK_TAB, "Tab");
+	        keyCodeMap.put(KeyEvent.VK_ESCAPE, "Esc");
+	        keyCodeMap.put(MouseEvent.BUTTON1_DOWN_MASK, "Mouse_1");
+	        keyCodeMap.put(MouseEvent.BUTTON3_DOWN_MASK, "Mouse_2"); // I'm sorry but mouse 2 is right click, I don't know what java is thinking
+		}
+		
+		// It does infact get the key from the code, alternatively it will display unknown key if it can't find one
+		public static String getKeyFromCode(int keyCode) {
+	        return keyCodeMap.getOrDefault(keyCode, "Unknown Key");
+	    }
+	}
 }
