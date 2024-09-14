@@ -26,7 +26,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.border.LineBorder;
 import java.awt.event.MouseMotionAdapter;
-import java.io.File;
+import java.io.*;
 
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -39,6 +39,8 @@ import java.util.List;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 
 public class mainGUI extends JFrame {
@@ -49,7 +51,7 @@ public class mainGUI extends JFrame {
 	// Variables for moving the window
 	int xCursor;
 	int yCursor;
-	
+
 	static JTextArea txtInputName;
 	JTextArea txtInputStatus;
 
@@ -249,26 +251,26 @@ public class mainGUI extends JFrame {
 		mainPanel.add(pnlMain, gbc_pnlMain);
 		SpringLayout sl_pnlMain = new SpringLayout();
 		pnlMain.setLayout(sl_pnlMain);
-		
+
 		JLabel lblInputName = new JLabel("Input");
 		sl_pnlMain.putConstraint(SpringLayout.WEST, lblInputName, 16, SpringLayout.WEST, pnlMain);
 		sl_pnlMain.putConstraint(SpringLayout.SOUTH, lblInputName, -315, SpringLayout.SOUTH, pnlMain);
 		pnlMain.add(lblInputName);
-		
-		
-		
+
+
+
 		txtInputName = new JTextArea();
 		sl_pnlMain.putConstraint(SpringLayout.NORTH, txtInputName, 6, SpringLayout.SOUTH, lblInputName);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, txtInputName, 16, SpringLayout.WEST, pnlMain);
 		sl_pnlMain.putConstraint(SpringLayout.SOUTH, txtInputName, -13, SpringLayout.SOUTH, pnlMain);
 		sl_pnlMain.putConstraint(SpringLayout.EAST, txtInputName, 159, SpringLayout.WEST, pnlMain);
 		pnlMain.add(txtInputName);
-		
+
 		JLabel lblInputStatus = new JLabel("Status");
 		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblInputStatus, 10, SpringLayout.NORTH, pnlMain);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, lblInputStatus, 152, SpringLayout.EAST, lblInputName);
 		pnlMain.add(lblInputStatus);
-		
+
 		txtInputStatus = new JTextArea();
 		sl_pnlMain.putConstraint(SpringLayout.EAST, txtInputStatus, 319, SpringLayout.WEST, lblInputStatus);
 		txtInputStatus.addMouseListener(new MouseAdapter() {
@@ -292,6 +294,102 @@ public class mainGUI extends JFrame {
 		gbc_pnlOptions.gridx = 18;
 		gbc_pnlOptions.gridy = 1;
 		mainPanel.add(pnlOptions, gbc_pnlOptions);
+		GridBagLayout gbl_pnlOptions = new GridBagLayout();
+		gbl_pnlOptions.columnWidths = new int[]{67, 9, 0};
+		gbl_pnlOptions.rowHeights = new int[]{21, 0, 0, 0, 0, 0};
+		gbl_pnlOptions.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
+		gbl_pnlOptions.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		pnlOptions.setLayout(gbl_pnlOptions);
+
+		JLabel lblProfiles = new JLabel("Profiles");
+		lblProfiles.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		GridBagConstraints gbc_lblProfiles = new GridBagConstraints();
+		gbc_lblProfiles.anchor = GridBagConstraints.NORTH;
+		gbc_lblProfiles.fill = GridBagConstraints.HORIZONTAL;
+		gbc_lblProfiles.insets = new Insets(10, 20, 5, 5);
+		gbc_lblProfiles.gridx = 0;
+		gbc_lblProfiles.gridy = 0;
+		pnlOptions.add(lblProfiles, gbc_lblProfiles);
+
+		JLabel lblHelp = new JLabel("");
+		lblHelp.setToolTipText("Allows for multiple sets of keybinds at once");
+		lblHelp.setHorizontalAlignment(SwingConstants.RIGHT);
+		ImageIcon helpIcon = new ImageIcon(userDirectory + "\\src\\data\\help.png");
+		lblHelp.setIcon(helpIcon);
+		GridBagConstraints gbc_lblHelp = new GridBagConstraints();
+		gbc_lblHelp.insets = new Insets(5, 0, 5, 10);
+		gbc_lblHelp.anchor = GridBagConstraints.WEST;
+		gbc_lblHelp.gridx = 1;
+		gbc_lblHelp.gridy = 0;
+		pnlOptions.add(lblHelp, gbc_lblHelp);
+
+		JComboBox<String> cbbProfiles = new JComboBox<>();
+		cbbProfiles.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				File configDirectory = new File(userDirectory + "\\src\\data\\" + cbbProfiles.getSelectedItem() + ".txt");
+				MidiHandling.setConfigFile(configDirectory);
+			}
+		});
+		GridBagConstraints gbc_cbbProfiles = new GridBagConstraints();
+		gbc_cbbProfiles.gridwidth = 2;
+		gbc_cbbProfiles.insets = new Insets(5, 10, 5, 10);
+		gbc_cbbProfiles.fill = GridBagConstraints.HORIZONTAL;
+		gbc_cbbProfiles.gridx = 0;
+		gbc_cbbProfiles.gridy = 1;
+		File directory = new File(userDirectory + "\\src\\data\\");
+		updateDropBox(directory, cbbProfiles);
+		pnlOptions.add(cbbProfiles, gbc_cbbProfiles);
+		
+		JButton btnAddNewProfile = new JButton("Add New Profile");
+		btnAddNewProfile.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String name = JOptionPane.showInputDialog(btnAddNewProfile, "Enter profile name", null);
+				File newFile = new File(directory + "\\" + name + ".txt");
+				profileHandling(newFile, btnAddNewProfile, true);
+				updateDropBox(directory, cbbProfiles);
+			}
+		});
+		
+		JButton btnRefresh = new JButton("Refresh");
+		btnRefresh.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				updateDropBox(directory, cbbProfiles);
+			}
+		});
+		GridBagConstraints gbc_btnRefresh = new GridBagConstraints();
+		gbc_btnRefresh.gridwidth = 2;
+		gbc_btnRefresh.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnRefresh.anchor = GridBagConstraints.WEST;
+		gbc_btnRefresh.insets = new Insets(5, 10, 5, 10);
+		gbc_btnRefresh.gridx = 0;
+		gbc_btnRefresh.gridy = 2;
+		pnlOptions.add(btnRefresh, gbc_btnRefresh);
+		
+		GridBagConstraints gbc_btnAddNewProfile = new GridBagConstraints();
+		gbc_btnAddNewProfile.gridwidth = 2;
+		gbc_btnAddNewProfile.insets = new Insets(5, 10, 5, 10);
+		gbc_btnAddNewProfile.gridx = 0;
+		gbc_btnAddNewProfile.gridy = 3;
+		pnlOptions.add(btnAddNewProfile, gbc_btnAddNewProfile);
+		
+		JButton btnRemoveProfile = new JButton("Delete Profile");
+		btnRemoveProfile.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				File newFile = new File(directory + "\\" + cbbProfiles.getSelectedItem() + ".txt");
+				profileHandling(newFile, btnRemoveProfile, false);
+				updateDropBox(directory, cbbProfiles);
+			}
+		});
+		GridBagConstraints gbc_btnRemoveProfile = new GridBagConstraints();
+		gbc_btnRemoveProfile.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnRemoveProfile.gridwidth = 2;
+		gbc_btnRemoveProfile.insets = new Insets(5, 10, 5, 10);
+		gbc_btnRemoveProfile.gridx = 0;
+		gbc_btnRemoveProfile.gridy = 4;
+		pnlOptions.add(btnRemoveProfile, gbc_btnRemoveProfile);
 
 		// I need to add the code to simply draw rectangles here to test functionality + practicality
 		// Inner class for custom drawing and key handling
@@ -311,10 +409,37 @@ public class mainGUI extends JFrame {
 		pnlKeyboard.requestFocusInWindow();
 		DrawingThread thread = new DrawingThread(pnlKeyboard);
 		thread.start();
-		}
-	
+	}
+
 	public static void insertText(String text) {
 		txtInputName.insert(text + "\n", 0);
+	}
+	
+	public static void profileHandling(File newProfile, JButton button, boolean create) {
+		File profile = newProfile;
+		try {
+			if (create) {
+				profile.createNewFile();
+			}
+			else {
+				profile.delete();
+			}
+		} catch (IOException e) {
+			JOptionPane.showInputDialog(button, "An error occured", JOptionPane.ERROR_MESSAGE);
+		}
+
+	}
+	
+	public static void updateDropBox(File directory, JComboBox<String> cbbProfiles) {
+		fileSearching configFilter = new fileSearching(".txt");
+		String[] configList = directory.list(configFilter);
+		if (configList != null) { 
+			cbbProfiles.removeAllItems();
+			for (int i = 0; i < configList.length; i++) {
+				String nameOnly = configList[i].substring(0, configList[i].length() - 4);
+				cbbProfiles.addItem(nameOnly);
+			}
+		}
 	}
 
 	class DrawingPanel extends JPanel {
@@ -406,7 +531,7 @@ public class mainGUI extends JFrame {
 					int whiteKeyIndex = Arrays.binarySearch(whiteKeys, currentKey);
 					int blackKeyIndex = Arrays.binarySearch(blackKeys, currentKey);
 					int previousKey, nextKey, whiteKeyWidth, blackKeyWidth, whiteKeyHeight, blackKeyHeightSmall, blackKeyHeightLarge, blackWhiteGap;
-					
+
 					// I added all these just to make it really easy to change the sizes of rectangles in case I rescale the GUI again.
 					// This is because I intend to develop this application to always be a set size and to not be full screened.
 					whiteKeyWidth = 20;
@@ -451,11 +576,13 @@ public class mainGUI extends JFrame {
 			}
 		}
 	}
-	
+
 	// I don't believe KeyEvents have a built in function to convert from the code to the *thing* they represent by default
 	// This hashmap is used to store all events and their *thing*, with a function to convert them
 	class KeyCodeMapper {
+		
 		private static final Map<Integer, String> keyCodeMap = new HashMap<>();
+		
 		static {
 			keyCodeMap.put(KeyEvent.VK_0, "0");
 			keyCodeMap.put(KeyEvent.VK_1, "1");
@@ -468,46 +595,59 @@ public class mainGUI extends JFrame {
 			keyCodeMap.put(KeyEvent.VK_8, "8");
 			keyCodeMap.put(KeyEvent.VK_9, "9");
 			keyCodeMap.put(KeyEvent.VK_A, "A");
-	        keyCodeMap.put(KeyEvent.VK_B, "B");
-	        keyCodeMap.put(KeyEvent.VK_C, "C");
-	        keyCodeMap.put(KeyEvent.VK_D, "D");
-	        keyCodeMap.put(KeyEvent.VK_E, "E");
-	        keyCodeMap.put(KeyEvent.VK_F, "F");
-	        keyCodeMap.put(KeyEvent.VK_G, "G");
-	        keyCodeMap.put(KeyEvent.VK_H, "H");
-	        keyCodeMap.put(KeyEvent.VK_I, "I");
-	        keyCodeMap.put(KeyEvent.VK_J, "J");
-	        keyCodeMap.put(KeyEvent.VK_K, "K");
-	        keyCodeMap.put(KeyEvent.VK_L, "L");
-	        keyCodeMap.put(KeyEvent.VK_M, "M");
-	        keyCodeMap.put(KeyEvent.VK_N, "N");
-	        keyCodeMap.put(KeyEvent.VK_O, "O");
-	        keyCodeMap.put(KeyEvent.VK_P, "P");
-	        keyCodeMap.put(KeyEvent.VK_Q, "Q");
-	        keyCodeMap.put(KeyEvent.VK_R, "R");
-	        keyCodeMap.put(KeyEvent.VK_S, "S");
-	        keyCodeMap.put(KeyEvent.VK_T, "T");
-	        keyCodeMap.put(KeyEvent.VK_U, "U");
-	        keyCodeMap.put(KeyEvent.VK_V, "V");
-	        keyCodeMap.put(KeyEvent.VK_W, "W");
-	        keyCodeMap.put(KeyEvent.VK_X, "X");
-	        keyCodeMap.put(KeyEvent.VK_Y, "Y");
-	        keyCodeMap.put(KeyEvent.VK_Z, "Z");
-	        keyCodeMap.put(KeyEvent.VK_SPACE, "Space");
-	        keyCodeMap.put(KeyEvent.VK_ENTER, "Enter");
-	        keyCodeMap.put(KeyEvent.VK_SHIFT, "Shift");
-	        keyCodeMap.put(KeyEvent.VK_CONTROL, "Ctrl");
-	        keyCodeMap.put(KeyEvent.VK_ALT, "Alt");
-	        keyCodeMap.put(KeyEvent.VK_BACK_SPACE, "Backspace");
-	        keyCodeMap.put(KeyEvent.VK_TAB, "Tab");
-	        keyCodeMap.put(KeyEvent.VK_ESCAPE, "Esc");
-	        keyCodeMap.put(MouseEvent.BUTTON1_DOWN_MASK, "Mouse_1");
-	        keyCodeMap.put(MouseEvent.BUTTON3_DOWN_MASK, "Mouse_2"); // I'm sorry but mouse 2 is right click, I don't know what java is thinking
+			keyCodeMap.put(KeyEvent.VK_B, "B");
+			keyCodeMap.put(KeyEvent.VK_C, "C");
+			keyCodeMap.put(KeyEvent.VK_D, "D");
+			keyCodeMap.put(KeyEvent.VK_E, "E");
+			keyCodeMap.put(KeyEvent.VK_F, "F");
+			keyCodeMap.put(KeyEvent.VK_G, "G");
+			keyCodeMap.put(KeyEvent.VK_H, "H");
+			keyCodeMap.put(KeyEvent.VK_I, "I");
+			keyCodeMap.put(KeyEvent.VK_J, "J");
+			keyCodeMap.put(KeyEvent.VK_K, "K");
+			keyCodeMap.put(KeyEvent.VK_L, "L");
+			keyCodeMap.put(KeyEvent.VK_M, "M");
+			keyCodeMap.put(KeyEvent.VK_N, "N");
+			keyCodeMap.put(KeyEvent.VK_O, "O");
+			keyCodeMap.put(KeyEvent.VK_P, "P");
+			keyCodeMap.put(KeyEvent.VK_Q, "Q");
+			keyCodeMap.put(KeyEvent.VK_R, "R");
+			keyCodeMap.put(KeyEvent.VK_S, "S");
+			keyCodeMap.put(KeyEvent.VK_T, "T");
+			keyCodeMap.put(KeyEvent.VK_U, "U");
+			keyCodeMap.put(KeyEvent.VK_V, "V");
+			keyCodeMap.put(KeyEvent.VK_W, "W");
+			keyCodeMap.put(KeyEvent.VK_X, "X");
+			keyCodeMap.put(KeyEvent.VK_Y, "Y");
+			keyCodeMap.put(KeyEvent.VK_Z, "Z");
+			keyCodeMap.put(KeyEvent.VK_SPACE, "Space");
+			keyCodeMap.put(KeyEvent.VK_ENTER, "Enter");
+			keyCodeMap.put(KeyEvent.VK_SHIFT, "Shift");
+			keyCodeMap.put(KeyEvent.VK_CONTROL, "Ctrl");
+			keyCodeMap.put(KeyEvent.VK_ALT, "Alt");
+			keyCodeMap.put(KeyEvent.VK_BACK_SPACE, "Backspace");
+			keyCodeMap.put(KeyEvent.VK_TAB, "Tab");
+			keyCodeMap.put(KeyEvent.VK_ESCAPE, "Esc");
+			keyCodeMap.put(MouseEvent.BUTTON1_DOWN_MASK, "Mouse_1");
+			keyCodeMap.put(MouseEvent.BUTTON3_DOWN_MASK, "Mouse_2"); // I'm sorry but mouse 2 is right click, I don't know what java is thinking
 		}
-		
+
 		// It does infact get the key from the code, alternatively it will display unknown key if it can't find one
 		public static String getKeyFromCode(int keyCode) {
-	        return keyCodeMap.getOrDefault(keyCode, "Unknown Key");
-	    }
+			return keyCodeMap.getOrDefault(keyCode, "Unknown Key");
+		}
+	}
+}
+
+class fileSearching implements FilenameFilter {
+
+	String searchText;
+
+	public fileSearching(String searchText) {
+		this.searchText = searchText;
+	}
+
+	public boolean accept(File dir, String name) {
+		return name.endsWith(searchText);
 	}
 }
