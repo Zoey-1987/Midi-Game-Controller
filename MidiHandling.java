@@ -29,6 +29,7 @@ public class MidiHandling {
 	private static List<Integer> keysToRemove = new CopyOnWriteArrayList<>();
 	private static List<Integer> pressedKeys = new CopyOnWriteArrayList<>();
 	private static Robot robot;
+	private static File configFile;
 
 	// Create an array for the items to be read in from the text document
 	public static String[][] keyControls = new String[9][2];
@@ -209,6 +210,7 @@ public class MidiHandling {
 							int keyCode = Integer.valueOf(keyControls[i][1]);
 							keyHandling(keyCode, true);
 							pressedKeys.add(currentKey);
+							mainGUI.insertText(KeyEvent.getKeyText(keyCode));
 						}
 					}
 				}
@@ -257,8 +259,7 @@ public class MidiHandling {
 		public static Integer[][] getKeyConfig() {
 			// The program will try to open the associated file and will throw an error if it can't be found
 			try {
-				String userDirectory = System.getProperty("user.dir");
-				File myObj = new File(userDirectory + "\\src\\data\\config.txt");
+				File myObj = configFile;
 				Scanner myReader = new Scanner(myObj);
 				int lineNumber = 0; // Keep track of the line number to determine what row of the array it's added to
 				while (myReader.hasNextLine()) {
@@ -283,7 +284,10 @@ public class MidiHandling {
 			return null;
 
 		}
-
-
+	}
+	
+	
+	public static void setConfigFile(File config) {
+		configFile = config;
 	}
 }
