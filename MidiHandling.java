@@ -12,8 +12,10 @@ import javax.sound.midi.Transmitter;
 import javax.swing.JOptionPane;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MidiHandling {
@@ -30,6 +32,7 @@ public class MidiHandling {
 	private static List<Integer> pressedKeys = new CopyOnWriteArrayList<>();
 	private static Robot robot;
 	private static File configFile;
+    private static Set<String> triggeredChords = new HashSet<>();
 
 	// Create an array for the items to be read in from the text document
 	public static String[][] keyControls = new String[9][2];
@@ -167,15 +170,19 @@ public class MidiHandling {
 				}
 			}
 		}
-
+		
+		
 		// Function to find each key in the remove keys array, erase it from the main array and clear itself when its done iterating
-		public static void removeKeys() {
+		private static void removeKeys() {
+			// For each key that is being removed
 			for (Integer keyNumber : keysToRemove) {
+				// Go through each key in the config
 				for (int i = 0; i < keyControls.length; i++) {
-					String currentCode = keyControls[i][0];
-					if (currentCode.startsWith(keyNumber.toString())) {
+					String currentCode = keyControls[i][0]; // currentCode is the current config line being looked at
+					if (containsKey(currentCode, keyNumber)) {
 						int keyCode = Integer.valueOf(keyControls[i][1]);
 						keyHandling(keyCode, false);
+						triggeredChords.clear(); // I kinda just threw this here as a test but it kind of works??
 						break;
 					}
 				}
@@ -183,44 +190,72 @@ public class MidiHandling {
 				pressedKeys.remove(keyNumber); // Remove the key from pressedKeys
 				keysToRemove.remove(keyNumber); // Remove the key from keysToRemove
 			}
-		}
+		}		
+		
 
 		// The function responsible for mimicking the appropriate key presses
-		public static void pressKeys() {
-			for (Integer currentKey : activeKeys) { // For each currently pressed key
-				if (!pressedKeys.contains(currentKey)) {
-					for (int i = 0; i < 9; i++) { // Go through each item in the config
-						boolean keyTrigger = false;
-						String currentCode = keyControls[i][0];
-						// Check if the current activeKey can be found at the start of one of the config numbers
-						if (currentCode.startsWith(currentKey.toString())) {
-							// If one of the config options does start with it, check if its a chord by seeing the length of the string
-							if (currentCode.length() > 2) {
-								// If the code is a chord then it will run the function to check for chords
-								if (isCompleteChord(currentCode, currentKey)) {
-									// When this code runs a full chord has been played, and therefore the program can execute the appropriate input
-									keyTrigger = true;
-								}
-							} else {
-								keyTrigger = true;
-							}
-						}
-						// If a key was triggered and validated then the keyHandling function will activate it (This works for mouse events too!)
-						if (keyTrigger) {
-							int keyCode = Integer.valueOf(keyControls[i][1]);
-							keyHandling(keyCode, true);
-							pressedKeys.add(currentKey);
-							mainGUI.insertText(KeyEvent.getKeyText(keyCode));
-						}
-					}
-				}
-			}
+		private static void pressKeys() {
+		    for (Integer currentKey : activeKeys) { // For each currently pressed key
+		        if (!pressedKeys.contains(currentKey)) {
+		            boolean chordTriggered = false;
+		            for (int i = 0; i < keyControls.length; i++) { // Go through each item in the config
+		            	
+		                String currentCode = keyControls[i][0];
+		                
+		                // Check if the activeKey can be part of a chord
+		                if (currentCode.contains(currentKey.toString())) {
+		                    if (isCompleteChord(currentCode, currentKey)) {
+		                    	if (!triggeredChords.contains(currentCode)) {
+		                    		chordTriggered = true;
+			                        int keyCode = Integer.valueOf(keyControls[i][1]);
+			                        keyHandling(keyCode, true);
+			                        pressedKeys.add(currentKey);
+			                        mainGUI.insertText(KeyEvent.getKeyText(keyCode));
+			                        triggeredChords.add(currentCode);
+			                        break;
+		                    	}
+		                    }
+		                }
+		            }
+		            // Handle the case where the chord is not fully complete yet
+		            if (chordTriggered) {
+		                // Additional handling if needed
+		            }
+		        }
+		    }
+		}
+		
+		
+		// Used to check if the keybind in config contains a key by checking it in pairs, as each key is 2 digits long
+		private static boolean containsKey(String currentCode, Integer keyNumber) {
+		    for (int i = 0; i < currentCode.length(); i += 2) {
+		        String pair = currentCode.substring(i, i + 2);
+		        if (pair.contains(keyNumber.toString())) {
+		            return true;
+		        }
+		    }
+		    return false;
+		}
+		
 
+		// Function to check if a chord is fully played and handle its triggering
+		private static boolean isCompleteChord(String chord, Integer startKey) {
+		    String startKeyStr = startKey.toString();
+		    String remainingChord = chord.substring(startKeyStr.length());
+
+		    // Convert remaining part of the chord to individual keys contained in a new arraylist
+		    List<Integer> remainingKeys = new ArrayList<>();
+		    for (int i = 0; i < remainingChord.length(); i += 2) {
+		        remainingKeys.add(Integer.parseInt(remainingChord.substring(i, i + 2)));
+		    }
+
+		    // Check if all remaining keys are currently active
+		    return activeKeys.containsAll(remainingKeys);
 		}
 
 
 		// Function to handle key / mouse presses and releases
-		public static void keyHandling(int keyCode, boolean isPress) {
+		private static void keyHandling(int keyCode, boolean isPress) {
 			// If the code is above 1000 it is likely a mouse press (I havent found any key presses remotely this high yet)
 			// After determining mouse or key it will use isPress to determine to either raise or lower the key
 			if (keyCode >= 1000) {
@@ -240,23 +275,8 @@ public class MidiHandling {
 		}
 
 
-		// Function to determine if the detected potential chord is complete to validate the key press
-		private static boolean isCompleteChord(String chord, Integer startKey) {
-			String startKeyStr = startKey.toString();
-			String remainingChord = chord.substring(startKeyStr.length());
-
-			// Convert remaining part of the chord to individual keys contained in a new arraylist
-			List<Integer> remainingKeys = new ArrayList<>();
-			for (int i = 0; i < remainingChord.length(); i += 2) {
-				remainingKeys.add(Integer.parseInt(remainingChord.substring(i, i + 2)));
-			}
-
-			// Check if all remaining keys are currently active
-			return activeKeys.containsAll(remainingKeys);
-		}
-
 		// A function responsible for reading the config file holding keymaps
-		public static Integer[][] getKeyConfig() {
+		private static Integer[][] getKeyConfig() {
 			// The program will try to open the associated file and will throw an error if it can't be found
 			try {
 				File myObj = configFile;
