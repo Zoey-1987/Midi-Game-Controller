@@ -35,8 +35,6 @@ import java.awt.event.ItemEvent;
 
 
 public class mainGUI extends JFrame {
-	// A list of each number on a 61 keyed keyboard that is linked to a white key
-	private int[] whiteKeys = {36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96};
 	// Gets the user directory to allow for images that don't have an absolute path
 	String userDirectory = System.getProperty("user.dir");
 	// Variables for moving the window6
@@ -872,30 +870,14 @@ public class mainGUI extends JFrame {
 
 	class DrawingThread extends Thread {
 		private DrawingPanel panel;
-		private boolean hasLeft;
-		private boolean hasRight;
 
 		public DrawingThread(DrawingPanel panel) {
 			this.panel = panel;  // Pass the DrawingPanel to the thread
 		}
 
-		public boolean getLeft() {
-			return this.hasLeft;
-		}
-
-		public boolean getRight() {
-			return this.hasRight;
-		}
-
-		public void setLeft(boolean left) {
-			this.hasLeft = left;
-		}
-
-		public void setRight(boolean right) {
-			this.hasRight = right;
-		}
-
 		public void run() {
+			// A list of each number on a 61 keyed keyboard linked to a white key
+			int[] whiteKeys = {36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96};
 			// A list of each number on a 61 keyed keyboard linked to a black key
 			// This list is a double and uses decimels to essentially insert gaps into the rectangles drawing as black keys aren't ordered as simply as white
 			// I'm sure this isn't the most efficient solution, but it works soooo
