@@ -40,12 +40,12 @@ public class mainGUI extends JFrame {
 	// Variables for moving the window6
 	int xCursor;
 	int yCursor;
-	
+
 	public static File configFile;
 
 	static JTextArea txtRandomTextBox;
 	static File configDirectory;
-	
+
 	static int selectedKey;
 
 	private static final long serialVersionUID = 1L;
@@ -69,14 +69,14 @@ public class mainGUI extends JFrame {
 			}
 		});
 	}
-	
+
 
 	/* ------------------------------------------------------------------------------
 	 * The code to create the main JFrame that the rest of the GUI is contained on
 	 ------------------------------------------------------------------------------ */
-	
+
 	// Main GUI
-	
+
 	public mainGUI() {
 		setUndecorated(true); // Removes default toolbar etc for custom design
 		setIconImage(Toolkit.getDefaultToolkit().getImage(userDirectory + "\\src\\data\\SkongCope.png")); // Sets the icon
@@ -94,14 +94,14 @@ public class mainGUI extends JFrame {
 		gbl_mainPanel.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		gbl_mainPanel.rowWeights = new double[]{0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
 		mainPanel.setLayout(gbl_mainPanel);
-		
-		
+
+
 		/* ------------------------------------------------------------------------------
 		 * The creation of all objects related to the toolbar
 		 ------------------------------------------------------------------------------ */
 
 		// Creation of the minimize button on the GUI
-		
+
 		JButton btnMini = new JButton("\u2014");
 		btnMini.setFocusPainted(false);
 		btnMini.setBorder(new EmptyBorder(5, 15, 5, 15));
@@ -112,9 +112,9 @@ public class mainGUI extends JFrame {
 		gbc_btnMini.gridx = 18;
 		gbc_btnMini.gridy = 0;
 		mainPanel.add(btnMini, gbc_btnMini);
-		
+
 		// Creation of the maximize button on the GUI
-		
+
 		JButton btnMaxi = new JButton("\uD83D\uDDD6");
 		btnMaxi.setFocusPainted(false);
 		btnMaxi.setBorder(new EmptyBorder(5, 15, 5, 15));
@@ -125,9 +125,9 @@ public class mainGUI extends JFrame {
 		gbc_btnMaxi.gridx = 19;
 		gbc_btnMaxi.gridy = 0;
 		mainPanel.add(btnMaxi, gbc_btnMaxi);
-		
+
 		// Creation of the exit button on the GUI
-		
+
 		JButton btnExit = new JButton("\u2716");
 		btnExit.setFocusPainted(false);
 		btnExit.setBorder(new EmptyBorder(5, 15, 5, 15));
@@ -138,9 +138,9 @@ public class mainGUI extends JFrame {
 		gbc_btnExit.gridx = 20;
 		gbc_btnExit.gridy = 0;
 		mainPanel.add(btnExit, gbc_btnExit);
-		
+
 		// Create the actual toolbar itself to give something to click on
-		
+
 		JPanel pnlToolBar = new JPanel();
 		pnlToolBar.setBackground(Color.DARK_GRAY);
 		GridBagConstraints gbc_pnlToolBar = new GridBagConstraints();
@@ -150,15 +150,15 @@ public class mainGUI extends JFrame {
 		gbc_pnlToolBar.gridx = 1;
 		gbc_pnlToolBar.gridy = 0;
 		mainPanel.add(pnlToolBar, gbc_pnlToolBar);
-		
-		
+
+
 		/* ------------------------------------------------------------------------------
 		 * The code to handle the movement of the window when the toolbar is clicked
 		 ------------------------------------------------------------------------------ */
-		
-		
+
+
 		// Gets the location of the cursor on the window
-		
+
 		pnlToolBar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -168,7 +168,7 @@ public class mainGUI extends JFrame {
 		});
 
 		// Get the location of the mouse on the screen and subtracts the window location from it for accurate movement
-		
+
 		pnlToolBar.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
@@ -178,14 +178,14 @@ public class mainGUI extends JFrame {
 			}
 		});
 
-		
+
 		/* ------------------------------------------------------------------------------
 		 * The code to handle the buttons contained in the custom toolbar
 		 ------------------------------------------------------------------------------ */
 
-		
+
 		// Minimize button
-		
+
 		// Listeners to activate when the mouse hovers over or exits the minimize button
 		btnMini.addMouseListener(new MouseAdapter() {
 			@Override
@@ -248,15 +248,15 @@ public class mainGUI extends JFrame {
 				System.exit(0);
 			}
 		});
-		
-		
+
+
 		/* ------------------------------------------------------------------------------
 		 * The code to create all objects related to the left side panel
 		 ------------------------------------------------------------------------------ */
-		
-		
+
+
 		// Creation of the main left panel
-		
+
 		JPanel pnlMain = new JPanel();
 		pnlMain.setBackground(Color.LIGHT_GRAY);
 		pnlMain.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
@@ -269,50 +269,50 @@ public class mainGUI extends JFrame {
 		mainPanel.add(pnlMain, gbc_pnlMain);
 		SpringLayout sl_pnlMain = new SpringLayout();
 		pnlMain.setLayout(sl_pnlMain);
-		
+
 		// Creation of that one random label I have and I'm not sure if I'll use it or not
-		
+
 		JLabel lblRandomTitle = new JLabel("Input");
 		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblRandomTitle, 10, SpringLayout.NORTH, pnlMain);
 		sl_pnlMain.putConstraint(SpringLayout.EAST, lblRandomTitle, -107, SpringLayout.EAST, pnlMain);
 		lblRandomTitle.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 		pnlMain.add(lblRandomTitle);
-		
+
 		// Creation of the random text box that goes with it
-		
+
 		txtRandomTextBox = new JTextArea();
 		sl_pnlMain.putConstraint(SpringLayout.NORTH, txtRandomTextBox, 42, SpringLayout.NORTH, pnlMain);
 		sl_pnlMain.putConstraint(SpringLayout.SOUTH, txtRandomTextBox, -10, SpringLayout.SOUTH, pnlMain);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, txtRandomTextBox, 389, SpringLayout.WEST, pnlMain);
 		sl_pnlMain.putConstraint(SpringLayout.EAST, txtRandomTextBox, -10, SpringLayout.EAST, pnlMain);
 		pnlMain.add(txtRandomTextBox);
-		
+
 		// Creation of the select input button
-		
+
 		JButton btnSelectRegularInput = new JButton("Select Input");
 		sl_pnlMain.putConstraint(SpringLayout.NORTH, btnSelectRegularInput, 1, SpringLayout.NORTH, txtRandomTextBox);
 		sl_pnlMain.putConstraint(SpringLayout.EAST, btnSelectRegularInput, -154, SpringLayout.WEST, txtRandomTextBox);
 		pnlMain.add(btnSelectRegularInput);
-		
+
 		// Creation of the key bindings title label
-		
+
 		JLabel lblKeyBindingsTitle = new JLabel("Key Bindings");
 		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblKeyBindingsTitle, 0, SpringLayout.NORTH, lblRandomTitle);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, lblKeyBindingsTitle, 81, SpringLayout.WEST, pnlMain);
 		lblKeyBindingsTitle.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 		pnlMain.add(lblKeyBindingsTitle);
-		
+
 		// Creation of the select key label
-		
+
 		JLabel lblSelectKey = new JLabel("Input:");
 		sl_pnlMain.putConstraint(SpringLayout.WEST, btnSelectRegularInput, 53, SpringLayout.EAST, lblSelectKey);
 		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblSelectKey, 0, SpringLayout.NORTH, txtRandomTextBox);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, lblSelectKey, 32, SpringLayout.WEST, pnlMain);
 		lblSelectKey.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 		pnlMain.add(lblSelectKey);
-		
+
 		// Creation of the selected key label
-		
+
 		JLabel lblSelectedKey = new JLabel("Selected Key:");
 		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblSelectedKey, 8, SpringLayout.SOUTH, lblSelectKey);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, lblSelectedKey, 10, SpringLayout.WEST, pnlMain);
@@ -326,9 +326,9 @@ public class mainGUI extends JFrame {
 		sl_pnlMain.putConstraint(SpringLayout.WEST, lblAddMidiKeys, 0, SpringLayout.WEST, lblSelectedKey);
 		lblAddMidiKeys.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 		pnlMain.add(lblAddMidiKeys);
-		
+
 		// Creation of the selected input text field
-		
+
 		JTextField txtSelectedInput = new JTextField();
 		txtSelectedInput.setEditable(false);
 		txtSelectedInput.setBackground(Color.WHITE);
@@ -338,46 +338,71 @@ public class mainGUI extends JFrame {
 		txtSelectedInput.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlMain.add(txtSelectedInput);
 		txtSelectedInput.setColumns(1);
-		
+
 		// Creation of the selected midi input button
-		
+
 		JButton btnSelectMidiInput = new JButton("Select Input");
 		sl_pnlMain.putConstraint(SpringLayout.NORTH, btnSelectMidiInput, 6, SpringLayout.SOUTH, txtSelectedInput);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, btnSelectMidiInput, 0, SpringLayout.WEST, btnSelectRegularInput);
 		sl_pnlMain.putConstraint(SpringLayout.EAST, btnSelectMidiInput, 0, SpringLayout.EAST, btnSelectRegularInput);
 		pnlMain.add(btnSelectMidiInput);
-		
-		
+
+		// Creation of the view binding label
+
+		JLabel lblViewBinding = new JLabel("View Binding:");
+		sl_pnlMain.putConstraint(SpringLayout.WEST, lblViewBinding, 0, SpringLayout.WEST, lblSelectedKey);
+		lblViewBinding.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		pnlMain.add(lblViewBinding);
+
+		// Creation of the view binding button
+
+		JButton btnViewBinding = new JButton("Check Midi Keys");
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblViewBinding, -1, SpringLayout.NORTH, btnViewBinding);
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, btnViewBinding, 6, SpringLayout.SOUTH, btnSelectMidiInput);
+		sl_pnlMain.putConstraint(SpringLayout.WEST, btnViewBinding, 0, SpringLayout.WEST, btnSelectRegularInput);
+		sl_pnlMain.putConstraint(SpringLayout.EAST, btnViewBinding, 0, SpringLayout.EAST, btnSelectRegularInput);
+		pnlMain.add(btnViewBinding);
+
+
 		/* ------------------------------------------------------------------------------
 		 * The code to handle the buttons contained in the left side panel
 		 ------------------------------------------------------------------------------ */
 
 		// Select Input Button
-		
+
 		btnSelectRegularInput.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				captureInput(txtSelectedInput);
 			}
 		});
-		
+
 		// Select Midi input button
-		
+
 		btnSelectMidiInput.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				captureMidiInput();
 			}
 		});
-		
-		
+
+		// View binding button
+
+		btnViewBinding.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// Function will go here
+			}
+		});
+
+
 		/* ------------------------------------------------------------------------------
 		 * The code for the creation of all object related to the right hand panel
 		 ------------------------------------------------------------------------------ */
-		
-		
+
+
 		// Creation of the right side panel
-		
+
 		JPanel pnlOptions = new JPanel();
 		pnlOptions.setBackground(Color.LIGHT_GRAY);
 		pnlOptions.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
@@ -394,7 +419,7 @@ public class mainGUI extends JFrame {
 		gbl_pnlOptions.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
 		gbl_pnlOptions.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlOptions.setLayout(gbl_pnlOptions);
-		
+
 		// Creation of the profile panel title label
 
 		JLabel lblProfilesTitle = new JLabel("Profiles");
@@ -406,7 +431,7 @@ public class mainGUI extends JFrame {
 		gbc_lblProfilesTitle.gridx = 0;
 		gbc_lblProfilesTitle.gridy = 0;
 		pnlOptions.add(lblProfilesTitle, gbc_lblProfilesTitle);
-		
+
 		// Creation of the help label
 
 		JLabel lblHelp = new JLabel("");
@@ -420,7 +445,7 @@ public class mainGUI extends JFrame {
 		gbc_lblHelp.gridx = 1;
 		gbc_lblHelp.gridy = 0;
 		pnlOptions.add(lblHelp, gbc_lblHelp);
-		
+
 		// Creation of the profiles combo box
 
 		JComboBox<String> cbbProfiles = new JComboBox<>();
@@ -433,9 +458,9 @@ public class mainGUI extends JFrame {
 		File directory = new File(userDirectory + "\\src\\data\\");
 		updateDropBox(directory, cbbProfiles);
 		pnlOptions.add(cbbProfiles, gbc_cbbProfiles);
-		
+
 		// Creation of the refresh button
-		
+
 		JButton btnRefresh = new JButton("Refresh");
 		GridBagConstraints gbc_btnRefresh = new GridBagConstraints();
 		gbc_btnRefresh.gridwidth = 2;
@@ -445,9 +470,9 @@ public class mainGUI extends JFrame {
 		gbc_btnRefresh.gridx = 0;
 		gbc_btnRefresh.gridy = 2;
 		pnlOptions.add(btnRefresh, gbc_btnRefresh);
-		
+
 		// Creation of the add new profile button
-		
+
 		JButton btnAddNewProfile = new JButton("Add New Profile");
 		GridBagConstraints gbc_btnAddNewProfile = new GridBagConstraints();
 		gbc_btnAddNewProfile.gridwidth = 2;
@@ -455,9 +480,9 @@ public class mainGUI extends JFrame {
 		gbc_btnAddNewProfile.gridx = 0;
 		gbc_btnAddNewProfile.gridy = 3;
 		pnlOptions.add(btnAddNewProfile, gbc_btnAddNewProfile);
-		
+
 		// Creation of the remove profile button
-		
+
 		JButton btnRemoveProfile = new JButton("Delete Profile");
 		GridBagConstraints gbc_btnRemoveProfile = new GridBagConstraints();
 		gbc_btnRemoveProfile.fill = GridBagConstraints.HORIZONTAL;
@@ -466,15 +491,15 @@ public class mainGUI extends JFrame {
 		gbc_btnRemoveProfile.gridx = 0;
 		gbc_btnRemoveProfile.gridy = 4;
 		pnlOptions.add(btnRemoveProfile, gbc_btnRemoveProfile);
-		
-		
+
+
 		/* ------------------------------------------------------------------------------
 		 * The code to handle the buttons contained in the right side panel
 		 ------------------------------------------------------------------------------ */
-		
-		
+
+
 		// Combo box item change
-		
+
 		cbbProfiles.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				configDirectory = new File(userDirectory + "\\src\\data\\" + cbbProfiles.getSelectedItem() + ".txt");
@@ -482,9 +507,9 @@ public class mainGUI extends JFrame {
 				MidiHandling.updateKeyConfig();
 			}
 		});
-		
+
 		// Combo box property change
-		
+
 		cbbProfiles.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				configDirectory = new File(userDirectory + "\\src\\data\\" + cbbProfiles.getSelectedItem() + ".txt");
@@ -492,9 +517,9 @@ public class mainGUI extends JFrame {
 				MidiHandling.updateKeyConfig();
 			}
 		});
-		
+
 		// Add new profile
-		
+
 		btnAddNewProfile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -504,18 +529,18 @@ public class mainGUI extends JFrame {
 				updateDropBox(directory, cbbProfiles);
 			}
 		});
-		
+
 		// Refresh combo box
-		
+
 		btnRefresh.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				updateDropBox(directory, cbbProfiles);
 			}
 		});
-		
+
 		// Remove profile
-		
+
 		btnRemoveProfile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -525,14 +550,14 @@ public class mainGUI extends JFrame {
 			}
 		});
 
-		
+
 		/* ------------------------------------------------------------------------------
 		 * The code for the bottom panel displaying the midi keyboard
 		 ------------------------------------------------------------------------------ */
-		
-		
+
+
 		// Creation of the drawing panel created from a class lower in the program
-		
+
 		DrawingPanel pnlKeyboard = new DrawingPanel();
 		pnlKeyboard.setBackground(Color.LIGHT_GRAY);
 		pnlKeyboard.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
@@ -548,51 +573,51 @@ public class mainGUI extends JFrame {
 		DrawingThread thread = new DrawingThread(pnlKeyboard);
 		thread.start();
 	}
-	
-	
+
+
 	/* ------------------------------------------------------------------------------
 	 * All the methods required for the buttons and labels in the left hand panel
 	 ------------------------------------------------------------------------------ */
-	
-	
+
+
 	// Method to create a dialog box to prompt the user to input midi keys for the new key binding
-	
+
 	public static void captureMidiInput() {
 		// Create dialog box with preset size and title
 		JDialog dialog = new JDialog((JFrame) null, "Select Midi Keys", false);
 		dialog.setSize(500, 200);
-        dialog.getContentPane().setLayout(null);
-        
-        // First label on the first line
-        JLabel lblInstruction1 = new JLabel("Press and hold the desired keys on the Midi keyboard");
-        lblInstruction1.setBounds(50, 20, 500, 30);
-        dialog.getContentPane().add(lblInstruction1);
-        
-        // Second label second line
-        JLabel lblInstruction2 = new JLabel("until the end of the countdown...");
-        lblInstruction2.setBounds(50, 40, 500, 30);
-        dialog.getContentPane().add(lblInstruction2);
-        
-        // Timer that will be modified by a thread to show the user how long to hold the keys for
-        // I used a timer rather than on press as this way you can have a key bind that uses both hands on the midi keyboard (If you really wanted)
-        JLabel lblTimer = new JLabel("3");
-        lblTimer.setBounds(250, 40, 500, 30);
-        dialog.getContentPane().add(lblTimer);
-  
-        // Center the dialog on the screen
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = toolkit.getScreenSize();
-        Dimension dialogSize = dialog.getSize();
-        int x = (screenSize.width - dialogSize.width) / 2;
-        int y = (screenSize.height - dialogSize.height) / 2;
-        dialog.setLocation(x, y);
-        dialog.setFocusable(true);
-        dialog.setVisible(true);
-        // Create new thread for the timer and pass in the label and dialog box
-        timerThread myTimerThread = new timerThread(lblTimer, dialog);
+		dialog.getContentPane().setLayout(null);
+
+		// First label on the first line
+		JLabel lblInstruction1 = new JLabel("Press and hold the desired keys on the Midi keyboard");
+		lblInstruction1.setBounds(50, 20, 500, 30);
+		dialog.getContentPane().add(lblInstruction1);
+
+		// Second label second line
+		JLabel lblInstruction2 = new JLabel("until the end of the countdown...");
+		lblInstruction2.setBounds(50, 40, 500, 30);
+		dialog.getContentPane().add(lblInstruction2);
+
+		// Timer that will be modified by a thread to show the user how long to hold the keys for
+		// I used a timer rather than on press as this way you can have a key bind that uses both hands on the midi keyboard (If you really wanted)
+		JLabel lblTimer = new JLabel("3");
+		lblTimer.setBounds(250, 40, 500, 30);
+		dialog.getContentPane().add(lblTimer);
+
+		// Center the dialog on the screen
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Dimension screenSize = toolkit.getScreenSize();
+		Dimension dialogSize = dialog.getSize();
+		int x = (screenSize.width - dialogSize.width) / 2;
+		int y = (screenSize.height - dialogSize.height) / 2;
+		dialog.setLocation(x, y);
+		dialog.setFocusable(true);
+		dialog.setVisible(true);
+		// Create new thread for the timer and pass in the label and dialog box
+		timerThread myTimerThread = new timerThread(lblTimer, dialog);
 		myTimerThread.start();
 	}
-	
+
 	public static List<String> readFile(File myFile) {
 		List<String> fileText = new ArrayList<String>();
 		try {
@@ -608,7 +633,7 @@ public class mainGUI extends JFrame {
 		catch (FileNotFoundException e) {System.out.println("File not found");}
 		return fileText;
 	}
-	
+
 	public static void writeFile(File myFile, List<String> midiKeyBinds, List<String> keyCodes) {
 		try {
 			File myObj = myFile;
@@ -621,7 +646,7 @@ public class mainGUI extends JFrame {
 		catch (FileNotFoundException e) {System.out.println("File not found");} 
 		catch (IOException e) {e.printStackTrace();}
 	}
-	
+
 	public static String[][] getKeyConfigArray() {
 		// The program will try to open the associated file and will throw an error if it can't be found
 		List<String> textFileContents = readFile(configFile);
@@ -636,92 +661,110 @@ public class mainGUI extends JFrame {
 		}
 		return keyControls;
 	}
-	
+
 	public static void setConfigFile(File config) {
 		configFile = config;
 	}
-	
-	
+
+
 	// Function to open popup and listen for key or mouse input
-    public static void captureInput(JTextField txtSelectedInput) {
-        JDialog dialog = new JDialog((JFrame) null, "Press a Key or Mouse Button", true);
-        dialog.setSize(300, 100);
-        dialog.getContentPane().setLayout(null);
+	public static void captureInput(JTextField txtSelectedInput) {
+		JDialog dialog = new JDialog((JFrame) null, "Press a Key or Mouse Button", true);
+		dialog.setSize(300, 100);
+		dialog.getContentPane().setLayout(null);
 
-        JLabel lblInstruction = new JLabel("Press any key or mouse button...");
-        lblInstruction.setBounds(50, 20, 200, 30);
-        dialog.getContentPane().add(lblInstruction);
+		JLabel lblInstruction = new JLabel("Press any key or mouse button...");
+		lblInstruction.setBounds(50, 20, 200, 30);
+		dialog.getContentPane().add(lblInstruction);
 
-        // Add a KeyListener to capture key press
-        dialog.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-            	selectedKey = e.getKeyCode();
-            	txtSelectedInput.setText(KeyEvent.getKeyText(selectedKey));
-            	System.out.println(selectedKey);
-            	
-            	dialog.dispose();
-            }
-        });
+		// Add a KeyListener to capture key press
+		dialog.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				selectedKey = e.getKeyCode();
+				txtSelectedInput.setText(KeyEvent.getKeyText(selectedKey));
+				System.out.println(selectedKey);
 
-        // Add a MouseListener to capture mouse press and determine the code for each button
-        dialog.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-            	if (e.toString().contains("Button1")) {
-            		txtSelectedInput.setText("Mouse_1");
-            		selectedKey = 1024;
-            	} 
-            	else if (e.toString().contains("Button2")) {
-            		txtSelectedInput.setText("Mouse_2");
-            		selectedKey = 2048;
-            	}
-            	else if (e.toString().contains("Button3")) {
-            		txtSelectedInput.setText("Mouse_3");
-            		selectedKey = 4096;
-            	}
-            	else {
-            		txtSelectedInput.setText("Unfamiliar Mouse Button");
-            	}
-            	System.out.println(selectedKey);
-            	dialog.dispose();
-            }
-        });
+				dialog.dispose();
+			}
+		});
 
-        // Center the dialog on the screen
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = toolkit.getScreenSize();
-        Dimension dialogSize = dialog.getSize();
-        int x = (screenSize.width - dialogSize.width) / 2;
-        int y = (screenSize.height - dialogSize.height) / 2;
-        dialog.setLocation(x, y);
+		// Add a MouseListener to capture mouse press and determine the code for each button
+		dialog.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (e.toString().contains("Button1")) {
+					txtSelectedInput.setText("Mouse_1");
+					selectedKey = 1024;
+				} 
+				else if (e.toString().contains("Button2")) {
+					txtSelectedInput.setText("Mouse_2");
+					selectedKey = 2048;
+				}
+				else if (e.toString().contains("Button3")) {
+					txtSelectedInput.setText("Mouse_3");
+					selectedKey = 4096;
+				}
+				else {
+					txtSelectedInput.setText("Unfamiliar Mouse Button");
+				}
+				System.out.println(selectedKey);
+				dialog.dispose();
+			}
+		});
 
-        // Make sure the dialog listens for key events
-        dialog.setFocusable(true);
-        dialog.setVisible(true);
-    }
-    
-    // Thread for the timer displayed on the popup window
+		// Center the dialog on the screen
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Dimension screenSize = toolkit.getScreenSize();
+		Dimension dialogSize = dialog.getSize();
+		int x = (screenSize.width - dialogSize.width) / 2;
+		int y = (screenSize.height - dialogSize.height) / 2;
+		dialog.setLocation(x, y);
+
+		// Make sure the dialog listens for key events
+		dialog.setFocusable(true);
+		dialog.setVisible(true);
+	}
+
+	public static List<Integer> getDemoKeys(String keyCodeSearch) {
+		String[][] configArray = getKeyConfigArray();
+		List<Integer> demoKeys = new ArrayList<Integer>();
+		// For each item in the config file
+		for (int i = 0; i < configArray.length; i++) {
+			// If its key code matches to key code being searched
+			if (configArray[i][1] == keyCodeSearch) {
+				String currentCode = configArray[i][0];
+				// Break the key bind down into individual keys
+				for (int j = 0; j < currentCode.length(); j += 2) {
+					String pair = currentCode.substring(j, j + 2);
+					demoKeys.add(Integer.valueOf(pair));
+				}
+				return demoKeys;
+			}
+		}
+		return null;
+	}
+
+	// Thread for the timer displayed on the popup window
 	private static class timerThread extends Thread {
 		private JLabel lblTimer;
 		private JDialog dialog;
-		
+
 		// Constructor to pass in the timer label
 		public timerThread(JLabel lblTimer, JDialog dialog) {
 			this.lblTimer = lblTimer;
 			this.dialog = dialog;
 		}
-		
+
 		// Perform a countdown when created
 		public void run() {
 			try {
 				for (int i = 3; i > 0; i--) {
-	                lblTimer.setText(String.valueOf(i));
-	                Thread.sleep(1000); // Wait for 1 second
-	            }
+					lblTimer.setText(String.valueOf(i));
+					Thread.sleep(1000); // Wait for 1 second
+				}
 				List<Integer> tempActiveKeys = MidiHandling.DisplayReceiver.getActiveKeys();
 				tempActiveKeys.sort(null);
-				System.out.println(tempActiveKeys.size());
 				Integer tempKeyCode = selectedKey;
 				String midiKeyBind = "";
 				for (int key: tempActiveKeys) {
@@ -732,10 +775,10 @@ public class mainGUI extends JFrame {
 				List<String> keyCodes = new ArrayList<String>();
 				int numberOfRows = configArray.length;
 				boolean overwritten = false;
-				
+
 				// Check through each row in the array to see if any key binds exist that are incompatible with the new one
 				for (int i = 0; i < numberOfRows; i++ ) {
-					
+
 					// If the current item of config has a compatible midi 
 					if (configArray[i][0].startsWith(tempActiveKeys.get(0).toString()) || configArray[i][1].startsWith(tempKeyCode.toString())) {
 						System.out.println("Incompatible");
@@ -747,40 +790,40 @@ public class mainGUI extends JFrame {
 						midiKeyBinds.add(configArray[i][0]);
 						keyCodes.add(configArray[i][1]);
 					}
-					
+
 				}
-				
+
 				if (!overwritten) {
 					midiKeyBinds.add(midiKeyBind);
 					keyCodes.add(tempKeyCode.toString());
 				}
-				
+
 				for (int i = 0; i < midiKeyBinds.size(); i++ ) {
 					System.out.print("Line number " + i + ": ");
 					System.out.print(midiKeyBinds.get(i) + ", ");
 					System.out.println(keyCodes.get(i));
-					
+
 				}
 
 				writeFile(configFile, midiKeyBinds, keyCodes);
 				getKeyConfigArray();
 				MidiHandling.updateKeyConfig();
 				dialog.dispose();
-				
+
 			} catch (InterruptedException e) {
 				// InterruptedException error would go here if I wanted to display it but I don't see the point here
 			}	
 		}
 	}
-    
-    
+
+
 	/* ------------------------------------------------------------------------------
 	 * All the methods required for the right hand panel for profile based tasks
 	 ------------------------------------------------------------------------------ */
-	
-	
+
+
 	// Function responsible for creating and deleting profiles
-	
+
 	public static void profileHandling(File newProfile, JButton button, boolean create) {
 		File profile = newProfile;
 		try {
@@ -794,7 +837,7 @@ public class mainGUI extends JFrame {
 			JOptionPane.showInputDialog(button, "An error occured", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	
+
 	// Function that updates the drop down menu with all avaliable directories
 	public static void updateDropBox(File directory, JComboBox<String> cbbProfiles) {
 		fileSearching configFilter = new fileSearching(".txt"); // Creates a filter for ending in .txt
@@ -808,19 +851,19 @@ public class mainGUI extends JFrame {
 			}
 		}
 	}
-    
-	
+
+
 	/* ------------------------------------------------------------------------------
 	 * All the methods required for the bottom panel / keyboard image
 	 ------------------------------------------------------------------------------ */
-	
-	
+
+
 	// The class to create the drawing panel to allow for the drawing of keys in real time in an efficient way
-	
+
 	class DrawingPanel extends JPanel {
-		
+
 		private static final long serialVersionUID = 1L;
-		
+
 		private List<Rectangle> whiteRectangles = new ArrayList<>();  // Initialize the list of white rectangles
 		private List<Rectangle> blackRectangles = new ArrayList<>();  // Initialize the list of black rectangles
 		private Image keyboardImage;
@@ -883,8 +926,9 @@ public class mainGUI extends JFrame {
 			// I'm sure this isn't the most efficient solution, but it works soooo
 			double[] blackKeys = {37, 39, 39.5, 42, 44, 46, 46.5, 49, 51, 51.5, 54, 56, 58, 58.5, 61, 63, 63.5, 66, 68, 70, 70.5, 73, 75, 75.5, 78, 80, 82, 82.5, 85, 87, 87.5, 90, 92, 94};
 
+			List<Integer> activeKeys = MidiHandling.DisplayReceiver.getActiveKeys();
+			
 			while (true) {  // Continuous loop to check for key presses
-				List<Integer> activeKeys = MidiHandling.DisplayReceiver.getActiveKeys();
 
 				// Clear existing rectangles
 				panel.clearRectangles();
@@ -938,8 +982,8 @@ public class mainGUI extends JFrame {
 			}
 		}
 	}
-	
-	
+
+
 	public static void insertText(String text) {
 		txtRandomTextBox.insert(text + "\n", 0);
 	}
