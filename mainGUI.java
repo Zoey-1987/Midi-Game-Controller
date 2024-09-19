@@ -618,7 +618,6 @@ public class mainGUI extends JFrame {
 			for (int i = 0; i < midiKeyBinds.size(); i++) {
 				myWriter.write(midiKeyBinds.get(i) + "," + keyCodes.get(i) + "\n");
 			}
-			MidiHandling.updateKeyConfig();
 			myWriter.close();
 		} 
 		catch (FileNotFoundException e) {System.out.println("File not found");} 
@@ -764,8 +763,10 @@ public class mainGUI extends JFrame {
 					System.out.println(keyCodes.get(i));
 					
 				}
-				System.out.println(configFile);
+
 				writeFile(configFile, midiKeyBinds, keyCodes);
+				getKeyConfigArray();
+				MidiHandling.updateKeyConfig();
 				dialog.dispose();
 				
 			} catch (InterruptedException e) {
