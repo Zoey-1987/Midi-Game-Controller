@@ -31,16 +31,14 @@ public class MidiHandling {
 	private static List<Integer> keysToRemove = new CopyOnWriteArrayList<>();
 	private static List<Integer> pressedKeys = new CopyOnWriteArrayList<>();
 	private static Robot robot;
-	private static File configFile;
-    private static Set<String> triggeredChords = new HashSet<>();
+	private static Set<String> triggeredChords = new HashSet<>();
 
 	// Create an array for the items to be read in from the text document
-	public static String[][] keyControls = new String[9][2];
+	public static String[][] keyControls = mainGUI.getKeyConfigArray();
 
 	// When this function is called it will get the transmitter and await input
 	// It will then display both the note that is pressed and its status as integers
 	public static void run() {
-		keyPressThread.getKeyConfig();
 		try {
 			robot = new Robot();
 		} catch (AWTException e) {
@@ -170,8 +168,8 @@ public class MidiHandling {
 				}
 			}
 		}
-		
-		
+
+
 		// Function to find each key in the remove keys array, erase it from the main array and clear itself when its done iterating
 		private static void removeKeys() {
 			// For each key that is being removed
@@ -191,66 +189,66 @@ public class MidiHandling {
 				keysToRemove.remove(keyNumber); // Remove the key from keysToRemove
 			}
 		}		
-		
+
 
 		// The function responsible for mimicking the appropriate key presses
 		private static void pressKeys() {
-		    for (Integer currentKey : activeKeys) { // For each currently pressed key
-		        if (!pressedKeys.contains(currentKey)) {
-		            boolean chordTriggered = false;
-		            for (int i = 0; i < keyControls.length; i++) { // Go through each item in the config
-		            	
-		                String currentCode = keyControls[i][0];
-		                
-		                // Check if the activeKey can be part of a chord
-		                if (currentCode.contains(currentKey.toString())) {
-		                    if (isCompleteChord(currentCode, currentKey)) {
-		                    	if (!triggeredChords.contains(currentCode)) {
-		                    		chordTriggered = true;
-			                        int keyCode = Integer.valueOf(keyControls[i][1]);
-			                        keyHandling(keyCode, true);
-			                        pressedKeys.add(currentKey);
-			                        mainGUI.insertText(KeyEvent.getKeyText(keyCode));
-			                        triggeredChords.add(currentCode);
-			                        break;
-		                    	}
-		                    }
-		                }
-		            }
-		            // Handle the case where the chord is not fully complete yet
-		            if (chordTriggered) {
-		                // Additional handling if needed
-		            }
-		        }
-		    }
+			for (Integer currentKey : activeKeys) { // For each currently pressed key
+				if (!pressedKeys.contains(currentKey)) {
+					boolean chordTriggered = false;
+					for (int i = 0; i < keyControls.length; i++) { // Go through each item in the config
+
+						String currentCode = keyControls[i][0];
+
+						// Check if the activeKey can be part of a chord
+						if (currentCode.contains(currentKey.toString())) {
+							if (isCompleteChord(currentCode, currentKey)) {
+								if (!triggeredChords.contains(currentCode)) {
+									chordTriggered = true;
+									int keyCode = Integer.valueOf(keyControls[i][1]);
+									keyHandling(keyCode, true);
+									pressedKeys.add(currentKey);
+									mainGUI.insertText(KeyEvent.getKeyText(keyCode));
+									triggeredChords.add(currentCode);
+									break;
+								}
+							}
+						}
+					}
+					// Handle the case where the chord is not fully complete yet
+					if (chordTriggered) {
+						// Additional handling if needed
+					}
+				}
+			}
 		}
-		
-		
+
+
 		// Used to check if the keybind in config contains a key by checking it in pairs, as each key is 2 digits long
 		private static boolean containsKey(String currentCode, Integer keyNumber) {
-		    for (int i = 0; i < currentCode.length(); i += 2) {
-		        String pair = currentCode.substring(i, i + 2);
-		        if (pair.contains(keyNumber.toString())) {
-		            return true;
-		        }
-		    }
-		    return false;
+			for (int i = 0; i < currentCode.length(); i += 2) {
+				String pair = currentCode.substring(i, i + 2);
+				if (pair.contains(keyNumber.toString())) {
+					return true;
+				}
+			}
+			return false;
 		}
-		
+
 
 		// Function to check if a chord is fully played and handle its triggering
 		private static boolean isCompleteChord(String chord, Integer startKey) {
-		    String startKeyStr = startKey.toString();
-		    String remainingChord = chord.substring(startKeyStr.length());
+			String startKeyStr = startKey.toString();
+			String remainingChord = chord.substring(startKeyStr.length());
 
-		    // Convert remaining part of the chord to individual keys contained in a new arraylist
-		    List<Integer> remainingKeys = new ArrayList<>();
-		    for (int i = 0; i < remainingChord.length(); i += 2) {
-		        remainingKeys.add(Integer.parseInt(remainingChord.substring(i, i + 2)));
-		    }
+			// Convert remaining part of the chord to individual keys contained in a new arraylist
+			List<Integer> remainingKeys = new ArrayList<>();
+			for (int i = 0; i < remainingChord.length(); i += 2) {
+				remainingKeys.add(Integer.parseInt(remainingChord.substring(i, i + 2)));
+			}
 
-		    // Check if all remaining keys are currently active
-		    return activeKeys.containsAll(remainingKeys);
+			// Check if all remaining keys are currently active
+			return activeKeys.containsAll(remainingKeys);
 		}
 
 
@@ -273,41 +271,9 @@ public class MidiHandling {
 				}
 			}
 		}
-
-
-		// A function responsible for reading the config file holding keymaps
-		private static Integer[][] getKeyConfig() {
-			// The program will try to open the associated file and will throw an error if it can't be found
-			try {
-				File myObj = configFile;
-				Scanner myReader = new Scanner(myObj);
-				int lineNumber = 0; // Keep track of the line number to determine what row of the array it's added to
-				while (myReader.hasNextLine()) {
-					// Reads each line of data, splits it based on the location of the comma
-					// Saves the first value in the first column and the second value in the second column
-					String data = myReader.nextLine();
-					String regex = "[,]";
-					String[] lineData = data.split(regex);
-					keyControls[lineNumber][0] = lineData[0];
-					keyControls[lineNumber][1] = lineData[1];
-					// Increments the line number to move onto the next segment of the array
-					lineNumber++;
-				}
-				myReader.close();
-			} 
-			catch (FileNotFoundException e) {
-				System.err.println("------------------------------------------------------------\nFile not found\n------------------------------------------------------------");
-				e.printStackTrace();
-			}
-
-
-			return null;
-
-		}
 	}
 	
-	
-	public static void setConfigFile(File config) {
-		configFile = config;
+	public static void updateKeyConfig() {
+		keyControls = mainGUI.getKeyConfigArray();
 	}
 }
