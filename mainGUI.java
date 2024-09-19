@@ -4,13 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Toolkit;
-import java.awt.GridLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.SystemColor;
-import java.awt.Component;
 import java.awt.GridBagLayout;
-import javax.swing.JToolBar;
 import java.awt.GridBagConstraints;
 import javax.swing.JButton;
 import java.awt.Insets;
@@ -18,13 +13,10 @@ import java.awt.Rectangle;
 
 import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.border.LineBorder;
 import java.awt.event.MouseMotionAdapter;
 import java.io.*;
 
@@ -32,16 +24,14 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 
 import javax.swing.*;
-import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 
 public class mainGUI extends JFrame {
@@ -49,13 +39,16 @@ public class mainGUI extends JFrame {
 	private int[] whiteKeys = {36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96};
 	// Gets the user directory to allow for images that don't have an absolute path
 	String userDirectory = System.getProperty("user.dir");
-	private static int selectedKey;
-	// Variables for moving the window
+	// Variables for moving the window6
 	int xCursor;
 	int yCursor;
+	
+	public static File configFile;
 
 	static JTextArea txtRandomTextBox;
-	File configDirectory;
+	static File configDirectory;
+	
+	static int selectedKey;
 
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
@@ -482,13 +475,28 @@ public class mainGUI extends JFrame {
 		 ------------------------------------------------------------------------------ */
 		
 		
+		// Combo box item change
+		
+		cbbProfiles.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				configDirectory = new File(userDirectory + "\\src\\data\\" + cbbProfiles.getSelectedItem() + ".txt");
+				setConfigFile(configDirectory);
+				MidiHandling.updateKeyConfig();
+			}
+		});
+		
+		// Combo box property change
 		
 		cbbProfiles.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				configDirectory = new File(userDirectory + "\\src\\data\\" + cbbProfiles.getSelectedItem() + ".txt");
-				MidiHandling.setConfigFile(configDirectory);
+				setConfigFile(configDirectory);
+				MidiHandling.updateKeyConfig();
 			}
 		});
+		
+		// Add new profile
+		
 		btnAddNewProfile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -498,12 +506,18 @@ public class mainGUI extends JFrame {
 				updateDropBox(directory, cbbProfiles);
 			}
 		});
+		
+		// Refresh combo box
+		
 		btnRefresh.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				updateDropBox(directory, cbbProfiles);
 			}
 		});
+		
+		// Remove profile
+		
 		btnRemoveProfile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -513,8 +527,14 @@ public class mainGUI extends JFrame {
 			}
 		});
 
-		// I need to add the code to simply draw rectangles here to test functionality + practicality
-		// Inner class for custom drawing and key handling
+		
+		/* ------------------------------------------------------------------------------
+		 * The code for the bottom panel displaying the midi keyboard
+		 ------------------------------------------------------------------------------ */
+		
+		
+		// Creation of the drawing panel created from a class lower in the program
+		
 		DrawingPanel pnlKeyboard = new DrawingPanel();
 		pnlKeyboard.setBackground(Color.LIGHT_GRAY);
 		pnlKeyboard.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
@@ -524,56 +544,12 @@ public class mainGUI extends JFrame {
 		gbc_pnlKeyboard.gridx = 1;
 		gbc_pnlKeyboard.gridy = 2;
 		mainPanel.add(pnlKeyboard, gbc_pnlKeyboard);
-
 		setVisible(true);
-
-		// Requesting focus because otherwise it wont be able to accept key events (I think)
 		pnlKeyboard.requestFocusInWindow();
+		// Create a thread to draw and remove the keys from the visual keyboard when necessary
 		DrawingThread thread = new DrawingThread(pnlKeyboard);
 		thread.start();
 	}
-
-	public static void insertText(String text) {
-		txtRandomTextBox.insert(text + "\n", 0);
-	}
-	
-	
-	
-	/* ------------------------------------------------------------------------------
-	 * All the methods required for the right hand panel for profile based tasks
-	 ------------------------------------------------------------------------------ */
-	
-	
-	
-	// Function responsible for creating and deleting profiles
-	public static void profileHandling(File newProfile, JButton button, boolean create) {
-		File profile = newProfile;
-		try {
-			if (create) {
-				profile.createNewFile();
-			}
-			else {
-				profile.delete();
-			}
-		} catch (IOException e) {
-			JOptionPane.showInputDialog(button, "An error occured", JOptionPane.ERROR_MESSAGE);
-		}
-	}
-	
-	// Function that updates the drop down menu with all avaliable directories
-	public static void updateDropBox(File directory, JComboBox<String> cbbProfiles) {
-		fileSearching configFilter = new fileSearching(".txt"); // Creates a filter for ending in .txt
-		String[] configList = directory.list(configFilter); // Creates a list of all files in the given directory that match the filter
-		if (configList != null) { 
-			cbbProfiles.removeAllItems(); // Clear the combo box to prevent duplicates
-			// Run through each item in the list and add it to the menu whilst cutting off the file extension at the end
-			for (int i = 0; i < configList.length; i++) {
-				String nameOnly = configList[i].substring(0, configList[i].length() - 4); //Removes .txt
-				cbbProfiles.addItem(nameOnly);
-			}
-		}
-	}
-	
 	
 	
 	/* ------------------------------------------------------------------------------
@@ -581,8 +557,8 @@ public class mainGUI extends JFrame {
 	 ------------------------------------------------------------------------------ */
 	
 	
-	
 	// Method to create a dialog box to prompt the user to input midi keys for the new key binding
+	
 	public static void captureMidiInput() {
 		// Create dialog box with preset size and title
 		JDialog dialog = new JDialog((JFrame) null, "Select Midi Keys", false);
@@ -601,7 +577,7 @@ public class mainGUI extends JFrame {
         
         // Timer that will be modified by a thread to show the user how long to hold the keys for
         // I used a timer rather than on press as this way you can have a key bind that uses both hands on the midi keyboard (If you really wanted)
-        JLabel lblTimer = new JLabel("5");
+        JLabel lblTimer = new JLabel("3");
         lblTimer.setBounds(250, 40, 500, 30);
         dialog.getContentPane().add(lblTimer);
   
@@ -628,13 +604,44 @@ public class mainGUI extends JFrame {
 				String data = myReader.nextLine();
 				fileText.add(data);
 			}
-			for (String line: fileText) {
-				System.out.println(line);
-			}
+			myReader.close();
 			return fileText;
 		} 
 		catch (FileNotFoundException e) {System.out.println("File not found");}
 		return fileText;
+	}
+	
+	public static void writeFile(File myFile, List<String> midiKeyBinds, List<String> keyCodes) {
+		try {
+			File myObj = myFile;
+			FileWriter myWriter = new FileWriter(myObj);
+			for (int i = 0; i < midiKeyBinds.size(); i++) {
+				myWriter.write(midiKeyBinds.get(i) + "," + keyCodes.get(i) + "\n");
+			}
+			MidiHandling.updateKeyConfig();
+			myWriter.close();
+		} 
+		catch (FileNotFoundException e) {System.out.println("File not found");} 
+		catch (IOException e) {e.printStackTrace();}
+	}
+	
+	public static String[][] getKeyConfigArray() {
+		// The program will try to open the associated file and will throw an error if it can't be found
+		List<String> textFileContents = readFile(configFile);
+		int numberOfLines = textFileContents.size();
+		String[][] keyControls = new String[numberOfLines][2];
+		// For each line in the text file
+		for (int i = 0; i < numberOfLines; i++) {
+			String regex = "[,]";
+			String[] lineData = textFileContents.get(i).split(regex);
+			keyControls[i][0] = lineData[0];
+			keyControls[i][1] = lineData[1];
+		}
+		return keyControls;
+	}
+	
+	public static void setConfigFile(File config) {
+		configFile = config;
 	}
 	
 	
@@ -696,8 +703,125 @@ public class mainGUI extends JFrame {
         dialog.setFocusable(true);
         dialog.setVisible(true);
     }
-
+    
+    // Thread for the timer displayed on the popup window
+	private static class timerThread extends Thread {
+		private JLabel lblTimer;
+		private JDialog dialog;
+		
+		// Constructor to pass in the timer label
+		public timerThread(JLabel lblTimer, JDialog dialog) {
+			this.lblTimer = lblTimer;
+			this.dialog = dialog;
+		}
+		
+		// Perform a countdown when created
+		public void run() {
+			try {
+				for (int i = 3; i > 0; i--) {
+	                lblTimer.setText(String.valueOf(i));
+	                Thread.sleep(1000); // Wait for 1 second
+	            }
+				List<Integer> tempActiveKeys = MidiHandling.DisplayReceiver.getActiveKeys();
+				tempActiveKeys.sort(null);
+				System.out.println(tempActiveKeys.size());
+				Integer tempKeyCode = selectedKey;
+				String midiKeyBind = "";
+				for (int key: tempActiveKeys) {
+					midiKeyBind = midiKeyBind + key;
+				}
+				String[][] configArray = getKeyConfigArray();
+				List<String> midiKeyBinds = new ArrayList<String>();
+				List<String> keyCodes = new ArrayList<String>();
+				int numberOfRows = configArray.length;
+				boolean overwritten = false;
+				
+				// Check through each row in the array to see if any key binds exist that are incompatible with the new one
+				for (int i = 0; i < numberOfRows; i++ ) {
+					
+					// If the current item of config has a compatible midi 
+					if (configArray[i][0].startsWith(tempActiveKeys.get(0).toString()) || configArray[i][1].startsWith(tempKeyCode.toString())) {
+						System.out.println("Incompatible");
+						midiKeyBinds.add(midiKeyBind);
+						keyCodes.add(tempKeyCode.toString());
+						overwritten = true;
+					} else {
+						System.out.println("Compatible");
+						midiKeyBinds.add(configArray[i][0]);
+						keyCodes.add(configArray[i][1]);
+					}
+					
+				}
+				
+				if (!overwritten) {
+					midiKeyBinds.add(midiKeyBind);
+					keyCodes.add(tempKeyCode.toString());
+				}
+				
+				for (int i = 0; i < midiKeyBinds.size(); i++ ) {
+					System.out.print("Line number " + i + ": ");
+					System.out.print(midiKeyBinds.get(i) + ", ");
+					System.out.println(keyCodes.get(i));
+					
+				}
+				System.out.println(configFile);
+				writeFile(configFile, midiKeyBinds, keyCodes);
+				dialog.dispose();
+				
+			} catch (InterruptedException e) {
+				// InterruptedException error would go here if I wanted to display it but I don't see the point here
+			}	
+		}
+	}
+    
+    
+	/* ------------------------------------------------------------------------------
+	 * All the methods required for the right hand panel for profile based tasks
+	 ------------------------------------------------------------------------------ */
+	
+	
+	// Function responsible for creating and deleting profiles
+	
+	public static void profileHandling(File newProfile, JButton button, boolean create) {
+		File profile = newProfile;
+		try {
+			if (create) {
+				profile.createNewFile();
+			}
+			else {
+				profile.delete();
+			}
+		} catch (IOException e) {
+			JOptionPane.showInputDialog(button, "An error occured", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	// Function that updates the drop down menu with all avaliable directories
+	public static void updateDropBox(File directory, JComboBox<String> cbbProfiles) {
+		fileSearching configFilter = new fileSearching(".txt"); // Creates a filter for ending in .txt
+		String[] configList = directory.list(configFilter); // Creates a list of all files in the given directory that match the filter
+		if (configList != null) { 
+			cbbProfiles.removeAllItems(); // Clear the combo box to prevent duplicates
+			// Run through each item in the list and add it to the menu whilst cutting off the file extension at the end
+			for (int i = 0; i < configList.length; i++) {
+				String nameOnly = configList[i].substring(0, configList[i].length() - 4); //Removes .txt
+				cbbProfiles.addItem(nameOnly);
+			}
+		}
+	}
+    
+	
+	/* ------------------------------------------------------------------------------
+	 * All the methods required for the bottom panel / keyboard image
+	 ------------------------------------------------------------------------------ */
+	
+	
+	// The class to create the drawing panel to allow for the drawing of keys in real time in an efficient way
+	
 	class DrawingPanel extends JPanel {
+		
+		private static final long serialVersionUID = 1L;
+		
 		private List<Rectangle> whiteRectangles = new ArrayList<>();  // Initialize the list of white rectangles
 		private List<Rectangle> blackRectangles = new ArrayList<>();  // Initialize the list of black rectangles
 		private Image keyboardImage;
@@ -831,34 +955,10 @@ public class mainGUI extends JFrame {
 			}
 		}
 	}
-	private static class timerThread extends Thread {
-		private JLabel lblTimer;
-		private JDialog dialog;
-		
-		// Constructor to pass in the timer label
-		public timerThread(JLabel lblTimer, JDialog dialog) {
-			this.lblTimer = lblTimer;
-			this.dialog = dialog;
-		}
-		
-		// Perform a countdown when created
-		public void run() {
-			try {
-				for (int i = 5; i > 0; i--) {
-	                lblTimer.setText(String.valueOf(i));
-	                Thread.sleep(1000); // Wait for 1 second
-	            }
-				List<Integer> tempActiveKeys = MidiHandling.DisplayReceiver.getActiveKeys();
-				System.out.println(tempActiveKeys.size());
-				for (int key: tempActiveKeys) {
-					System.out.println(key);
-				}
-				dialog.dispose();
-				
-			} catch (InterruptedException e) {
-				// InterruptedException error would go here if I wanted to display it but I don't see the point here
-			}	
-		}
+	
+	
+	public static void insertText(String text) {
+		txtRandomTextBox.insert(text + "\n", 0);
 	}
 }
 
