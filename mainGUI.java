@@ -50,6 +50,8 @@ public class mainGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
+	
+	List<Integer> demoKeysList = new ArrayList<>();
 
 	/**
 	 * Launch the application.
@@ -291,7 +293,7 @@ public class mainGUI extends JFrame {
 
 		JButton btnSelectRegularInput = new JButton("Select Input");
 		sl_pnlMain.putConstraint(SpringLayout.NORTH, btnSelectRegularInput, 1, SpringLayout.NORTH, txtRandomTextBox);
-		sl_pnlMain.putConstraint(SpringLayout.EAST, btnSelectRegularInput, -154, SpringLayout.WEST, txtRandomTextBox);
+		sl_pnlMain.putConstraint(SpringLayout.EAST, btnSelectRegularInput, -138, SpringLayout.WEST, txtRandomTextBox);
 		pnlMain.add(btnSelectRegularInput);
 
 		// Creation of the key bindings title label
@@ -314,7 +316,7 @@ public class mainGUI extends JFrame {
 		// Creation of the selected key label
 
 		JLabel lblSelectedKey = new JLabel("Selected Key:");
-		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblSelectedKey, 8, SpringLayout.SOUTH, lblSelectKey);
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblSelectedKey, 6, SpringLayout.SOUTH, lblSelectKey);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, lblSelectedKey, 10, SpringLayout.WEST, pnlMain);
 		lblSelectedKey.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 		pnlMain.add(lblSelectedKey);
@@ -322,19 +324,19 @@ public class mainGUI extends JFrame {
 		// Creation of the add bindings label
 
 		JLabel lblAddMidiKeys = new JLabel("Add Binding:");
-		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblAddMidiKeys, 6, SpringLayout.SOUTH, lblSelectedKey);
-		sl_pnlMain.putConstraint(SpringLayout.WEST, lblAddMidiKeys, 0, SpringLayout.WEST, lblSelectedKey);
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblAddMidiKeys, 8, SpringLayout.SOUTH, lblSelectedKey);
+		sl_pnlMain.putConstraint(SpringLayout.EAST, lblAddMidiKeys, -10, SpringLayout.EAST, lblSelectedKey);
 		lblAddMidiKeys.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 		pnlMain.add(lblAddMidiKeys);
 
 		// Creation of the selected input text field
 
 		JTextField txtSelectedInput = new JTextField();
-		txtSelectedInput.setEditable(false);
-		txtSelectedInput.setBackground(Color.WHITE);
-		sl_pnlMain.putConstraint(SpringLayout.NORTH, txtSelectedInput, 6, SpringLayout.SOUTH, btnSelectRegularInput);
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, txtSelectedInput, 7, SpringLayout.SOUTH, btnSelectRegularInput);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, txtSelectedInput, 0, SpringLayout.WEST, btnSelectRegularInput);
 		sl_pnlMain.putConstraint(SpringLayout.EAST, txtSelectedInput, 0, SpringLayout.EAST, btnSelectRegularInput);
+		txtSelectedInput.setEditable(false);
+		txtSelectedInput.setBackground(Color.WHITE);
 		txtSelectedInput.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlMain.add(txtSelectedInput);
 		txtSelectedInput.setColumns(1);
@@ -342,7 +344,7 @@ public class mainGUI extends JFrame {
 		// Creation of the selected midi input button
 
 		JButton btnSelectMidiInput = new JButton("Select Input");
-		sl_pnlMain.putConstraint(SpringLayout.NORTH, btnSelectMidiInput, 6, SpringLayout.SOUTH, txtSelectedInput);
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, btnSelectMidiInput, 1, SpringLayout.NORTH, lblAddMidiKeys);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, btnSelectMidiInput, 0, SpringLayout.WEST, btnSelectRegularInput);
 		sl_pnlMain.putConstraint(SpringLayout.EAST, btnSelectMidiInput, 0, SpringLayout.EAST, btnSelectRegularInput);
 		pnlMain.add(btnSelectMidiInput);
@@ -350,18 +352,34 @@ public class mainGUI extends JFrame {
 		// Creation of the view binding label
 
 		JLabel lblViewBinding = new JLabel("View Binding:");
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblViewBinding, 8, SpringLayout.SOUTH, lblAddMidiKeys);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, lblViewBinding, 0, SpringLayout.WEST, lblSelectedKey);
 		lblViewBinding.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 		pnlMain.add(lblViewBinding);
 
 		// Creation of the view binding button
 
-		JButton btnViewBinding = new JButton("Check Midi Keys");
-		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblViewBinding, -1, SpringLayout.NORTH, btnViewBinding);
-		sl_pnlMain.putConstraint(SpringLayout.NORTH, btnViewBinding, 6, SpringLayout.SOUTH, btnSelectMidiInput);
+		JButton btnViewBinding = new JButton("Highlight Keys");
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, btnViewBinding, 1, SpringLayout.NORTH, lblViewBinding);
 		sl_pnlMain.putConstraint(SpringLayout.WEST, btnViewBinding, 0, SpringLayout.WEST, btnSelectRegularInput);
 		sl_pnlMain.putConstraint(SpringLayout.EAST, btnViewBinding, 0, SpringLayout.EAST, btnSelectRegularInput);
 		pnlMain.add(btnViewBinding);
+		
+		// Creation of the remove binding label
+		
+		JLabel lblRemoveBinding = new JLabel("Remove Binding:");
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, lblRemoveBinding, 10, SpringLayout.SOUTH, lblViewBinding);
+		sl_pnlMain.putConstraint(SpringLayout.WEST, lblRemoveBinding, 0, SpringLayout.WEST, lblSelectedKey);
+		lblRemoveBinding.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		pnlMain.add(lblRemoveBinding);
+		
+		// Creation of the remove binding button
+		
+		JButton btnRemoveBinding = new JButton("Remove Keybind");
+		sl_pnlMain.putConstraint(SpringLayout.NORTH, btnRemoveBinding, 1, SpringLayout.NORTH, lblRemoveBinding);
+		sl_pnlMain.putConstraint(SpringLayout.WEST, btnRemoveBinding, 0, SpringLayout.WEST, btnSelectRegularInput);
+		sl_pnlMain.putConstraint(SpringLayout.EAST, btnRemoveBinding, 0, SpringLayout.EAST, btnSelectRegularInput);
+		pnlMain.add(btnRemoveBinding);
 
 
 		/* ------------------------------------------------------------------------------
@@ -389,9 +407,31 @@ public class mainGUI extends JFrame {
 		// View binding button
 
 		btnViewBinding.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				Integer theKey = selectedKey;
+				demoKeysList = getDemoKeys(theKey.toString());
+				try {
+					for (int item: demoKeysList) {}
+				}
+				catch(NullPointerException k) {
+					JOptionPane.showMessageDialog(null, "Please provide an input using the buttons\nabove, and assure this key is bound", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				demoKeysList.clear();
+			}
+		});
+		
+		// Remove binding button
+		
+		btnRemoveBinding.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// Function will go here
+				removeKeyBind();
 			}
 		});
 
@@ -646,6 +686,37 @@ public class mainGUI extends JFrame {
 		catch (FileNotFoundException e) {System.out.println("File not found");} 
 		catch (IOException e) {e.printStackTrace();}
 	}
+	
+	public static void removeKeyBind() {
+		List<Integer> tempActiveKeys = MidiHandling.DisplayReceiver.getActiveKeys();
+		tempActiveKeys.sort(null);
+		Integer tempKeyCode = selectedKey;
+		String midiKeyBind = "";
+		for (int key: tempActiveKeys) {
+			midiKeyBind = midiKeyBind + key;
+		}
+		String[][] configArray = getKeyConfigArray();
+		List<String> midiKeyBinds = new ArrayList<String>();
+		List<String> keyCodes = new ArrayList<String>();
+		int numberOfRows = configArray.length;
+
+		// Check through each row in the array to see if any key binds exist that are incompatible with the new one
+		for (int i = 0; i < numberOfRows; i++ ) {
+			for (int key: tempActiveKeys) {
+				midiKeyBind = midiKeyBind + key;
+			}
+			// If the current item of config has a compatible midi 
+			if (!configArray[i][1].startsWith(tempKeyCode.toString())) {
+				midiKeyBinds.add(midiKeyBind);
+				keyCodes.add(tempKeyCode.toString());
+			}
+		}
+
+		writeFile(configFile, midiKeyBinds, keyCodes);
+		getKeyConfigArray();
+		MidiHandling.updateKeyConfig();
+
+	}
 
 	public static String[][] getKeyConfigArray() {
 		// The program will try to open the associated file and will throw an error if it can't be found
@@ -683,7 +754,6 @@ public class mainGUI extends JFrame {
 			public void keyPressed(KeyEvent e) {
 				selectedKey = e.getKeyCode();
 				txtSelectedInput.setText(KeyEvent.getKeyText(selectedKey));
-				System.out.println(selectedKey);
 
 				dialog.dispose();
 			}
@@ -708,7 +778,6 @@ public class mainGUI extends JFrame {
 				else {
 					txtSelectedInput.setText("Unfamiliar Mouse Button");
 				}
-				System.out.println(selectedKey);
 				dialog.dispose();
 			}
 		});
@@ -732,7 +801,7 @@ public class mainGUI extends JFrame {
 		// For each item in the config file
 		for (int i = 0; i < configArray.length; i++) {
 			// If its key code matches to key code being searched
-			if (configArray[i][1] == keyCodeSearch) {
+			if (configArray[i][1].equals(keyCodeSearch)) {
 				String currentCode = configArray[i][0];
 				// Break the key bind down into individual keys
 				for (int j = 0; j < currentCode.length(); j += 2) {
@@ -781,12 +850,10 @@ public class mainGUI extends JFrame {
 
 					// If the current item of config has a compatible midi 
 					if (configArray[i][0].startsWith(tempActiveKeys.get(0).toString()) || configArray[i][1].startsWith(tempKeyCode.toString())) {
-						System.out.println("Incompatible");
 						midiKeyBinds.add(midiKeyBind);
 						keyCodes.add(tempKeyCode.toString());
 						overwritten = true;
 					} else {
-						System.out.println("Compatible");
 						midiKeyBinds.add(configArray[i][0]);
 						keyCodes.add(configArray[i][1]);
 					}
@@ -796,13 +863,6 @@ public class mainGUI extends JFrame {
 				if (!overwritten) {
 					midiKeyBinds.add(midiKeyBind);
 					keyCodes.add(tempKeyCode.toString());
-				}
-
-				for (int i = 0; i < midiKeyBinds.size(); i++ ) {
-					System.out.print("Line number " + i + ": ");
-					System.out.print(midiKeyBinds.get(i) + ", ");
-					System.out.println(keyCodes.get(i));
-
 				}
 
 				writeFile(configFile, midiKeyBinds, keyCodes);
@@ -866,6 +926,7 @@ public class mainGUI extends JFrame {
 
 		private List<Rectangle> whiteRectangles = new ArrayList<>();  // Initialize the list of white rectangles
 		private List<Rectangle> blackRectangles = new ArrayList<>();  // Initialize the list of black rectangles
+		private List<Rectangle> redRectangles = new ArrayList<>(); // Initiialize the list of red rectangles
 		private Image keyboardImage;
 
 		public DrawingPanel() {
@@ -883,10 +944,16 @@ public class mainGUI extends JFrame {
 			blackRectangles.add(rect);
 		}
 
+		// Add a black rectangle to the list
+		public void addRedRectangle(Rectangle rect) {
+			redRectangles.add(rect);
+		}
+
 		// Clear all rectangles (to update for new keys)
 		public void clearRectangles() {
 			whiteRectangles.clear();
 			blackRectangles.clear();
+			redRectangles.clear();
 		}
 
 		@Override
@@ -900,6 +967,11 @@ public class mainGUI extends JFrame {
 				g.setColor(Color.LIGHT_GRAY);
 				// Draw the rectangle
 
+				g.fillRect(rect.x, rect.y, rect.width, rect.height);
+			}
+			for (Rectangle rect : redRectangles) {
+				g.setColor(Color.RED);
+				// Draw the rectangle
 				g.fillRect(rect.x, rect.y, rect.width, rect.height);
 			}
 			for (Rectangle rect : blackRectangles) {
@@ -927,25 +999,30 @@ public class mainGUI extends JFrame {
 			double[] blackKeys = {37, 39, 39.5, 42, 44, 46, 46.5, 49, 51, 51.5, 54, 56, 58, 58.5, 61, 63, 63.5, 66, 68, 70, 70.5, 73, 75, 75.5, 78, 80, 82, 82.5, 85, 87, 87.5, 90, 92, 94};
 
 			List<Integer> activeKeys = MidiHandling.DisplayReceiver.getActiveKeys();
-			
-			while (true) {  // Continuous loop to check for key presses
+			Integer theKey = selectedKey;
 
+
+			int whiteKeyIndex, blackKeyIndex, previousKey, nextKey, whiteKeyWidth, blackKeyWidth, whiteKeyHeight, blackKeyHeightSmall, blackKeyHeightLarge, blackWhiteGap;
+
+			// I added all these just to make it really easy to change the sizes of rectangles in case I rescale the GUI again.
+			// This is because I intend to develop this application to always be a set size and to not be full screened.
+			whiteKeyWidth = 20;
+			blackKeyWidth = 14;
+			whiteKeyHeight = 133;
+			blackKeyHeightSmall = 77;
+			blackKeyHeightLarge = 81;
+			blackWhiteGap = whiteKeyWidth - (blackKeyWidth / 2);
+
+
+			while (true) {  // Continuous loop to check for key presses
 				// Clear existing rectangles
 				panel.clearRectangles();
 
 				for (Integer currentKey : activeKeys) { // For each currently pressed key
-					int whiteKeyIndex = Arrays.binarySearch(whiteKeys, currentKey);
-					int blackKeyIndex = Arrays.binarySearch(blackKeys, currentKey);
-					int previousKey, nextKey, whiteKeyWidth, blackKeyWidth, whiteKeyHeight, blackKeyHeightSmall, blackKeyHeightLarge, blackWhiteGap;
 
-					// I added all these just to make it really easy to change the sizes of rectangles in case I rescale the GUI again.
-					// This is because I intend to develop this application to always be a set size and to not be full screened.
-					whiteKeyWidth = 20;
-					blackKeyWidth = 14;
-					whiteKeyHeight = 133;
-					blackKeyHeightSmall = 77;
-					blackKeyHeightLarge = 81;
-					blackWhiteGap = whiteKeyWidth - (blackKeyWidth / 2);
+					whiteKeyIndex = Arrays.binarySearch(whiteKeys, currentKey);
+					blackKeyIndex = Arrays.binarySearch(blackKeys, currentKey);
+
 					if (whiteKeyIndex >= 0) {
 						// If its the first key in the list it won't have a previous key
 						if (currentKey == 36) {
@@ -970,6 +1047,39 @@ public class mainGUI extends JFrame {
 					} else if (blackKeyIndex >= 0) {
 						// Draw a black key slightly offset
 						panel.addBlackRectangle(new Rectangle(blackKeyIndex * whiteKeyWidth + blackWhiteGap, 0, blackKeyWidth, blackKeyHeightLarge));
+					}
+				}
+
+				if (demoKeysList != null) {
+					for (Integer currentKey : demoKeysList) {
+						whiteKeyIndex = Arrays.binarySearch(whiteKeys, currentKey);
+						blackKeyIndex = Arrays.binarySearch(blackKeys, currentKey);
+
+						if (whiteKeyIndex >= 0) {
+							// If its the first key in the list it won't have a previous key
+							if (currentKey == 36) {
+								previousKey = -1;
+							} else {
+								previousKey = whiteKeys[whiteKeyIndex - 1];
+							}
+							// If its the last key in the list it won't have a next key
+							if (currentKey == 96) {
+								nextKey = -1;
+							} else {
+								nextKey = whiteKeys[whiteKeyIndex + 1];
+							}
+							// Draw a white key
+							panel.addRedRectangle(new Rectangle(whiteKeyIndex * whiteKeyWidth, 0, whiteKeyWidth, whiteKeyHeight));
+							if (previousKey == currentKey - 2) {
+								panel.addBlackRectangle(new Rectangle((whiteKeyIndex - 1) * whiteKeyWidth + blackWhiteGap, 0, blackKeyWidth, blackKeyHeightSmall));
+							}
+							if (nextKey == currentKey + 2) {
+								panel.addBlackRectangle(new Rectangle((whiteKeyIndex) * whiteKeyWidth + blackWhiteGap, 0, blackKeyWidth, blackKeyHeightSmall));
+							}
+						} else if (blackKeyIndex >= 0) {
+							// Draw a black key slightly offset
+							panel.addRedRectangle(new Rectangle(blackKeyIndex * whiteKeyWidth + blackWhiteGap, 0, blackKeyWidth, blackKeyHeightLarge));
+						}
 					}
 				}
 				panel.repaint();  // Repaint the panel to reflect new active keys
