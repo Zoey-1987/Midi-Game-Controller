@@ -83,17 +83,17 @@ public class mainGUI extends JFrame {
 	public mainGUI() {
 		instance = this;
 		setUndecorated(true); // Removes default toolbar etc for custom design
-		setIconImage(Toolkit.getDefaultToolkit().getImage(userDirectory + "\\src\\data\\SkongCope.png")); // Sets the icon
+		setIconImage(Toolkit.getDefaultToolkit().getImage(userDirectory + "\\src\\data\\images\\SkongCope.png")); // Sets the icon
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 750, 550); // Set window size
 		mainPanel = new JPanel();
 		mainPanel.setAlignmentX(0.0f);
-		mainPanel.setBackground(Color.DARK_GRAY);
+		mainPanel.setBackground(new Color(43, 24, 63));
 		mainPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
 
 		setContentPane(mainPanel);
 		GridBagLayout gbl_mainPanel = new GridBagLayout();
-		gbl_mainPanel.columnWidths = new int[] {5, 30, 30, 30, 73, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 41, 45, 45, 0};
+		gbl_mainPanel.columnWidths = new int[] {5, 30, 30, 30, 73, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 65, 45, 45, 0};
 		gbl_mainPanel.rowHeights = new int[]{0, 350, 158, 0, 0};
 		gbl_mainPanel.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		gbl_mainPanel.rowWeights = new double[]{0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
@@ -109,7 +109,7 @@ public class mainGUI extends JFrame {
 		JButton btnMini = new JButton("\u2014");
 		btnMini.setFocusPainted(false);
 		btnMini.setBorder(new EmptyBorder(5, 15, 5, 15));
-		btnMini.setBackground(Color.DARK_GRAY);
+		btnMini.setBackground(new Color(43, 24, 63));
 		btnMini.setForeground(Color.WHITE);
 		GridBagConstraints gbc_btnMini = new GridBagConstraints();
 		gbc_btnMini.insets = new Insets(0, 0, 5, 5);
@@ -117,32 +117,12 @@ public class mainGUI extends JFrame {
 		gbc_btnMini.gridy = 0;
 		mainPanel.add(btnMini, gbc_btnMini);
 
-
-		// Minimize button
-
-		// Listeners to activate when the mouse hovers over or exits the minimize button
-		btnMini.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				btnMini.setBackground(Color.GRAY);
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				btnMini.setBackground(Color.DARK_GRAY);
-			}
-			// Minimize the GUI when clicked
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				setState(JFrame.ICONIFIED);
-			}
-		});
-
 		// Creation of the exit button on the GUI
 
 		JButton btnExit = new JButton("\u2716");
 		btnExit.setFocusPainted(false);
 		btnExit.setBorder(new EmptyBorder(5, 15, 5, 15));
-		btnExit.setBackground(Color.DARK_GRAY);
+		btnExit.setBackground(new Color(43, 24, 63));
 		btnExit.setForeground(Color.WHITE);
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
 		gbc_btnExit.insets = new Insets(0, 0, 5, 5);
@@ -153,7 +133,7 @@ public class mainGUI extends JFrame {
 		// Create the actual toolbar itself to give something to click on
 
 		JPanel pnlToolBar = new JPanel();
-		pnlToolBar.setBackground(Color.DARK_GRAY);
+		pnlToolBar.setBackground(new Color(43, 24, 63));
 		GridBagConstraints gbc_pnlToolBar = new GridBagConstraints();
 		gbc_pnlToolBar.gridwidth = 17;
 		gbc_pnlToolBar.insets = new Insets(0, 0, 5, 5);
@@ -204,13 +184,32 @@ public class mainGUI extends JFrame {
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				btnExit.setBackground(Color.DARK_GRAY);
+				btnExit.setBackground(new Color(43, 24, 63));
 			}
 			// Listener for clicking the exit button
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				dispose();
 				System.exit(0);
+			}
+		});
+
+		// Minimize button
+
+		// Listeners to activate when the mouse hovers over or exits the minimize button
+		btnMini.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				btnMini.setBackground(Color.GRAY);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				btnMini.setBackground(new Color(43, 24, 63));
+			}
+			// Minimize the GUI when clicked
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setState(JFrame.ICONIFIED);
 			}
 		});
 
@@ -225,6 +224,7 @@ public class mainGUI extends JFrame {
 		JPanel pnlMain = new JPanel();
 		pnlMain.setBackground(Color.LIGHT_GRAY);
 		pnlMain.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
+		pnlMain.setLayout(null);
 		GridBagConstraints gbc_pnlMain = new GridBagConstraints();
 		gbc_pnlMain.gridwidth = 17;
 		gbc_pnlMain.insets = new Insets(0, 0, 5, 5);
@@ -232,210 +232,128 @@ public class mainGUI extends JFrame {
 		gbc_pnlMain.gridx = 1;
 		gbc_pnlMain.gridy = 1;
 		mainPanel.add(pnlMain, gbc_pnlMain);
-		GridBagLayout gbl_pnlMain = new GridBagLayout();
-		gbl_pnlMain.columnWidths = new int[]{42, 75, 75, 95, 38, 168, 0};
-		gbl_pnlMain.rowHeights = new int[]{21, 2, 9, 9, 24, 24, 37, 34, 0};
-		gbl_pnlMain.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_pnlMain.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		pnlMain.setLayout(gbl_pnlMain);
-
-		// Creation of that one random label I have and I'm not sure if I'll use it or not
-
-		JLabel lblRandomTitle = new JLabel("Input");
-		lblRandomTitle.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-		GridBagConstraints gbc_lblRandomTitle = new GridBagConstraints();
-		gbc_lblRandomTitle.anchor = GridBagConstraints.NORTHEAST;
-		gbc_lblRandomTitle.insets = new Insets(0, 0, 5, 0);
-		gbc_lblRandomTitle.gridx = 5;
-		gbc_lblRandomTitle.gridy = 0;
-		pnlMain.add(lblRandomTitle, gbc_lblRandomTitle);
-
-		JPanel panel = new JPanel();
-		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.insets = new Insets(0, 0, 0, 5);
-		gbc_panel.gridwidth = 4;
-		gbc_panel.fill = GridBagConstraints.BOTH;
-		gbc_panel.gridheight = 6;
-		gbc_panel.gridx = 1;
-		gbc_panel.gridy = 1;
-		pnlMain.add(panel, gbc_panel);
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{53, 76, 50, 0};
-		gbl_panel.rowHeights = new int[]{21, 24, 22, 33, 24, 23, 10, 0};
-		gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		panel.setLayout(gbl_panel);
-
-		// Creation of the key bindings title label
-
-		JLabel lblKeyBindingsTitle = new JLabel("Key Bindings");
-		GridBagConstraints gbc_lblKeyBindingsTitle = new GridBagConstraints();
-		gbc_lblKeyBindingsTitle.anchor = GridBagConstraints.NORTH;
-		gbc_lblKeyBindingsTitle.insets = new Insets(0, 0, 5, 0);
-		gbc_lblKeyBindingsTitle.gridwidth = 3;
-		gbc_lblKeyBindingsTitle.gridx = 0;
-		gbc_lblKeyBindingsTitle.gridy = 0;
-		panel.add(lblKeyBindingsTitle, gbc_lblKeyBindingsTitle);
-		lblKeyBindingsTitle.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-
-		// Creation of the select key label
-
-		JLabel lblSelectKey = new JLabel("Input:");
-		GridBagConstraints gbc_lblSelectKey = new GridBagConstraints();
-		gbc_lblSelectKey.gridwidth = 2;
-		gbc_lblSelectKey.anchor = GridBagConstraints.NORTH;
-		gbc_lblSelectKey.insets = new Insets(0, 0, 5, 5);
-		gbc_lblSelectKey.gridx = 0;
-		gbc_lblSelectKey.gridy = 1;
-		panel.add(lblSelectKey, gbc_lblSelectKey);
-		lblSelectKey.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-
-		// Creation of the select input button
-
-		JButton btnSelectRegularInput = new JButton("Select Input");
-		GridBagConstraints gbc_btnSelectRegularInput = new GridBagConstraints();
-		gbc_btnSelectRegularInput.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnSelectRegularInput.anchor = GridBagConstraints.SOUTH;
-		gbc_btnSelectRegularInput.insets = new Insets(0, 0, 5, 0);
-		gbc_btnSelectRegularInput.gridx = 2;
-		gbc_btnSelectRegularInput.gridy = 1;
-		panel.add(btnSelectRegularInput, gbc_btnSelectRegularInput);
-
-		// Creation of the selected key label
-
-		JLabel lblSelectedKey = new JLabel("Selected Key:");
-		GridBagConstraints gbc_lblSelectedKey = new GridBagConstraints();
-		gbc_lblSelectedKey.anchor = GridBagConstraints.NORTH;
-		gbc_lblSelectedKey.insets = new Insets(0, 0, 5, 5);
-		gbc_lblSelectedKey.gridwidth = 2;
-		gbc_lblSelectedKey.gridx = 0;
-		gbc_lblSelectedKey.gridy = 2;
-		panel.add(lblSelectedKey, gbc_lblSelectedKey);
-		lblSelectedKey.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-
-		// Creation of the selected input text field
-
-		JTextField txtSelectedInput = new JTextField();
-		GridBagConstraints gbc_txtSelectedInput = new GridBagConstraints();
-		gbc_txtSelectedInput.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtSelectedInput.insets = new Insets(0, 0, 5, 0);
-		gbc_txtSelectedInput.gridx = 2;
-		gbc_txtSelectedInput.gridy = 2;
-		panel.add(txtSelectedInput, gbc_txtSelectedInput);
-		txtSelectedInput.setEditable(false);
-		txtSelectedInput.setBackground(Color.WHITE);
-		txtSelectedInput.setHorizontalAlignment(SwingConstants.CENTER);
-		txtSelectedInput.setColumns(1);
-
-		// Creation of the add bindings label
-
-		JLabel lblAddMidiKeys = new JLabel("Add Binding:");
-		GridBagConstraints gbc_lblAddMidiKeys = new GridBagConstraints();
-		gbc_lblAddMidiKeys.anchor = GridBagConstraints.SOUTH;
-		gbc_lblAddMidiKeys.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAddMidiKeys.gridwidth = 2;
-		gbc_lblAddMidiKeys.gridx = 0;
-		gbc_lblAddMidiKeys.gridy = 3;
-		panel.add(lblAddMidiKeys, gbc_lblAddMidiKeys);
-		lblAddMidiKeys.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-
-		// Creation of the selected midi input button
-
-		JButton btnSelectMidiInput = new JButton("Select Input");
-		GridBagConstraints gbc_btnSelectMidiInput = new GridBagConstraints();
-		gbc_btnSelectMidiInput.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnSelectMidiInput.anchor = GridBagConstraints.NORTH;
-		gbc_btnSelectMidiInput.insets = new Insets(0, 0, 5, 0);
-		gbc_btnSelectMidiInput.gridx = 2;
-		gbc_btnSelectMidiInput.gridy = 3;
-		panel.add(btnSelectMidiInput, gbc_btnSelectMidiInput);
-
-		// Creation of the view binding label
-
-		JLabel lblViewBinding = new JLabel("View Binding:");
-		GridBagConstraints gbc_lblViewBinding = new GridBagConstraints();
-		gbc_lblViewBinding.anchor = GridBagConstraints.NORTH;
-		gbc_lblViewBinding.insets = new Insets(0, 0, 5, 5);
-		gbc_lblViewBinding.gridwidth = 2;
-		gbc_lblViewBinding.gridx = 0;
-		gbc_lblViewBinding.gridy = 4;
-		panel.add(lblViewBinding, gbc_lblViewBinding);
-		lblViewBinding.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-
-		// Creation of the view binding button
-
-		JButton btnViewBinding = new JButton("Highlight Keys");
-		GridBagConstraints gbc_btnViewBinding = new GridBagConstraints();
-		gbc_btnViewBinding.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnViewBinding.anchor = GridBagConstraints.SOUTH;
-		gbc_btnViewBinding.insets = new Insets(0, 0, 5, 0);
-		gbc_btnViewBinding.gridx = 2;
-		gbc_btnViewBinding.gridy = 4;
-		panel.add(btnViewBinding, gbc_btnViewBinding);
-
-		// Creation of the remove binding label
-
-		JLabel lblRemoveBinding = new JLabel("Remove Binding:");
-		GridBagConstraints gbc_lblRemoveBinding = new GridBagConstraints();
-		gbc_lblRemoveBinding.insets = new Insets(0, 0, 5, 5);
-		gbc_lblRemoveBinding.anchor = GridBagConstraints.SOUTH;
-		gbc_lblRemoveBinding.gridwidth = 2;
-		gbc_lblRemoveBinding.gridx = 0;
-		gbc_lblRemoveBinding.gridy = 5;
-		panel.add(lblRemoveBinding, gbc_lblRemoveBinding);
-		lblRemoveBinding.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-
-		// Creation of the remove binding button
-
-		JButton btnRemoveBinding = new JButton("Remove Keybind");
-		GridBagConstraints gbc_btnRemoveBinding = new GridBagConstraints();
-		gbc_btnRemoveBinding.insets = new Insets(0, 0, 5, 0);
-		gbc_btnRemoveBinding.anchor = GridBagConstraints.NORTHWEST;
-		gbc_btnRemoveBinding.gridx = 2;
-		gbc_btnRemoveBinding.gridy = 5;
-		panel.add(btnRemoveBinding, gbc_btnRemoveBinding);
 
 		// Creation of the random text box that goes with it
 
 		txtRandomTextBox = new JTextArea();
+		txtRandomTextBox.setForeground(Color.BLACK);
+		txtRandomTextBox.setOpaque(false);
+		txtRandomTextBox.setBorder(null);
+		txtRandomTextBox.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtRandomTextBox.setBounds(424, 64, 87, 121);
+		pnlMain.add(txtRandomTextBox);
 		txtRandomTextBox.setRows(1);
-		GridBagConstraints gbc_txtRandomTextBox = new GridBagConstraints();
-		gbc_txtRandomTextBox.anchor = GridBagConstraints.NORTH;
-		gbc_txtRandomTextBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtRandomTextBox.insets = new Insets(0, 0, 5, 0);
-		gbc_txtRandomTextBox.gridheight = 2;
-		gbc_txtRandomTextBox.gridx = 5;
-		gbc_txtRandomTextBox.gridy = 1;
-		pnlMain.add(txtRandomTextBox, gbc_txtRandomTextBox);
+
+		JLabel lblTitle = new JLabel("");
+		lblTitle.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\title.png"));
+		lblTitle.setBounds(23, 11, 337, 44);
+		pnlMain.add(lblTitle);
+
+		// Creation of the label for picking a key
+
+		JLabel lblPickInputNew = new JLabel("");
+		lblPickInputNew.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\pickInputA.png"));
+		lblPickInputNew.setBounds(23, 66, 251, 24);
+		pnlMain.add(lblPickInputNew);
+
+		// Creation of the label to bind midi inputs to the key
+
+		JLabel lblBindKeyNew = new JLabel("");
+		lblBindKeyNew.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\bindKeyA.png"));
+		lblBindKeyNew.setBounds(23, 101, 251, 24);
+		pnlMain.add(lblBindKeyNew);
+
+		// Creation of the label to display the midi key binds
+
+		JLabel lblDisplayBinding = new JLabel("");
+		lblDisplayBinding.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\displayBindingA.png"));
+		lblDisplayBinding.setBounds(23, 136, 304, 24);
+		pnlMain.add(lblDisplayBinding);
+
+		// Creation of the delete binding label
+
+		JLabel lblDeleteBinding = new JLabel("");
+		lblDeleteBinding.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\deleteBindingA.png"));
+		lblDeleteBinding.setBounds(23, 171, 294, 24);
+		pnlMain.add(lblDeleteBinding);
+
+		// Creation of the selected input text field
+
+		JTextField txtSelectedInput = new JTextField();
+		txtSelectedInput.setForeground(Color.PINK);
+		txtSelectedInput.setFont(new Font("Arial Black", Font.PLAIN, 28));
+		txtSelectedInput.setBorder(null);
+		txtSelectedInput.setOpaque(false);
+		txtSelectedInput.setEditable(false);
+		txtSelectedInput.setBounds(23, 277, 313, 44);
+		pnlMain.add(txtSelectedInput);
+		txtSelectedInput.setBackground(Color.WHITE);
+		txtSelectedInput.setHorizontalAlignment(SwingConstants.CENTER);
+		txtSelectedInput.setColumns(1);
+
+		JLabel lblLeftPanelImage = new JLabel("");
+		lblLeftPanelImage.setIcon(new ImageIcon(userDirectory + "\\src\\Data\\images\\panelImageLeft.png"));
+		lblLeftPanelImage.setBounds(3, 3, 577, 344);
+		pnlMain.add(lblLeftPanelImage);
 
 
 		/* ------------------------------------------------------------------------------
 		 * The code to handle the buttons contained in the left side panel
 		 ------------------------------------------------------------------------------ */
-		
-		
-		// Select Input Button
 
-		btnSelectRegularInput.addMouseListener(new MouseAdapter() {
+		// Listener for pick input button
+
+		lblPickInputNew.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblPickInputNew.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\\\pickInputB.png"));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblPickInputNew.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\pickInputA.png"));
+			}
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				captureInput(txtSelectedInput);
 			}
 		});
 
-		// Select Midi input button
+		// Listener for add bind button
 
-		btnSelectMidiInput.addMouseListener(new MouseAdapter() {
+		lblBindKeyNew.addMouseListener(new MouseAdapter() {
+
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseEntered(MouseEvent e) {
+				lblBindKeyNew.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\\\bindKeyB.png"));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblBindKeyNew.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\\\bindKeyA.png"));
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
 				captureMidiInput();
 			}
 		});
 
-		// View binding button
+		// Listener for display binding button
 
-		btnViewBinding.addMouseListener(new MouseAdapter() {
+		lblDisplayBinding.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblDisplayBinding.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\\\displayBindingB.png"));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblDisplayBinding.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\\\displayBindingA.png"));
+			}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -454,15 +372,28 @@ public class mainGUI extends JFrame {
 				demoKeysList.clear();
 			}
 		});
-		
-		// Remove binding button
 
-		btnRemoveBinding.addMouseListener(new MouseAdapter() {
+		// Listener for delete binding button
+
+		lblDeleteBinding.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblDeleteBinding.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\deleteBindingB.png"));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblDeleteBinding.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\deleteBindingA.png"));
+			}
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				removeKeyBind();
 			}
 		});
+
+
 
 
 		/* ------------------------------------------------------------------------------
@@ -475,6 +406,7 @@ public class mainGUI extends JFrame {
 		JPanel pnlOptions = new JPanel();
 		pnlOptions.setBackground(Color.LIGHT_GRAY);
 		pnlOptions.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
+		pnlOptions.setLayout(null);
 		GridBagConstraints gbc_pnlOptions = new GridBagConstraints();
 		gbc_pnlOptions.gridwidth = 3;
 		gbc_pnlOptions.insets = new Insets(0, 0, 5, 5);
@@ -482,84 +414,59 @@ public class mainGUI extends JFrame {
 		gbc_pnlOptions.gridx = 18;
 		gbc_pnlOptions.gridy = 1;
 		mainPanel.add(pnlOptions, gbc_pnlOptions);
-		GridBagLayout gbl_pnlOptions = new GridBagLayout();
-		gbl_pnlOptions.columnWidths = new int[]{67, 9, 0};
-		gbl_pnlOptions.rowHeights = new int[]{21, 0, 0, 0, 0, 0};
-		gbl_pnlOptions.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
-		gbl_pnlOptions.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		pnlOptions.setLayout(gbl_pnlOptions);
 
 		// Creation of the profile panel title label
 
-		JLabel lblProfilesTitle = new JLabel("Profiles");
+		JLabel lblProfilesTitle = new JLabel("");
+		lblProfilesTitle.setIcon(new ImageIcon(userDirectory + "\\src\\Data\\images\\Profiles.png"));
+		lblProfilesTitle.setBounds(8, 12, 139, 21);
 		lblProfilesTitle.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-		GridBagConstraints gbc_lblProfilesTitle = new GridBagConstraints();
-		gbc_lblProfilesTitle.anchor = GridBagConstraints.NORTH;
-		gbc_lblProfilesTitle.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblProfilesTitle.insets = new Insets(10, 20, 5, 5);
-		gbc_lblProfilesTitle.gridx = 0;
-		gbc_lblProfilesTitle.gridy = 0;
-		pnlOptions.add(lblProfilesTitle, gbc_lblProfilesTitle);
+		pnlOptions.add(lblProfilesTitle);
 
 		// Creation of the help label
 
 		JLabel lblHelp = new JLabel("");
+		lblHelp.setBounds(0, 0, 0, 0);
 		lblHelp.setToolTipText("Allows for multiple sets of keybinds at once");
 		lblHelp.setHorizontalAlignment(SwingConstants.RIGHT);
-		ImageIcon helpIcon = new ImageIcon(userDirectory + "\\src\\data\\help.png");
+		ImageIcon helpIcon = new ImageIcon(userDirectory + "\\src\\data\\images\\help.png");
 		lblHelp.setIcon(helpIcon);
-		GridBagConstraints gbc_lblHelp = new GridBagConstraints();
-		gbc_lblHelp.insets = new Insets(5, 0, 5, 10);
-		gbc_lblHelp.anchor = GridBagConstraints.WEST;
-		gbc_lblHelp.gridx = 1;
-		gbc_lblHelp.gridy = 0;
-		pnlOptions.add(lblHelp, gbc_lblHelp);
+		pnlOptions.add(lblHelp);
 
 		// Creation of the profiles combo box
 
 		JComboBox<String> cbbProfiles = new JComboBox<>();
-		GridBagConstraints gbc_cbbProfiles = new GridBagConstraints();
-		gbc_cbbProfiles.gridwidth = 2;
-		gbc_cbbProfiles.insets = new Insets(5, 10, 5, 10);
-		gbc_cbbProfiles.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbbProfiles.gridx = 0;
-		gbc_cbbProfiles.gridy = 1;
+		cbbProfiles.setFont(new Font("Tahoma", Font.BOLD, 12));
+		cbbProfiles.setBounds(13, 44, 127, 22);
 		File directory = new File(userDirectory + "\\src\\data\\");
 		updateDropBox(directory, cbbProfiles);
-		pnlOptions.add(cbbProfiles, gbc_cbbProfiles);
+		pnlOptions.add(cbbProfiles);
 
 		// Creation of the refresh button
 
 		JButton btnRefresh = new JButton("Refresh");
-		GridBagConstraints gbc_btnRefresh = new GridBagConstraints();
-		gbc_btnRefresh.gridwidth = 2;
-		gbc_btnRefresh.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnRefresh.anchor = GridBagConstraints.WEST;
-		gbc_btnRefresh.insets = new Insets(5, 10, 5, 10);
-		gbc_btnRefresh.gridx = 0;
-		gbc_btnRefresh.gridy = 2;
-		pnlOptions.add(btnRefresh, gbc_btnRefresh);
+		btnRefresh.setBounds(13, 76, 127, 23);
+		pnlOptions.add(btnRefresh);
 
 		// Creation of the add new profile button
 
 		JButton btnAddNewProfile = new JButton("Add New Profile");
-		GridBagConstraints gbc_btnAddNewProfile = new GridBagConstraints();
-		gbc_btnAddNewProfile.gridwidth = 2;
-		gbc_btnAddNewProfile.insets = new Insets(5, 10, 5, 10);
-		gbc_btnAddNewProfile.gridx = 0;
-		gbc_btnAddNewProfile.gridy = 3;
-		pnlOptions.add(btnAddNewProfile, gbc_btnAddNewProfile);
+		btnAddNewProfile.setBounds(13, 110, 127, 23);
+		pnlOptions.add(btnAddNewProfile);
 
 		// Creation of the remove profile button
 
 		JButton btnRemoveProfile = new JButton("Delete Profile");
-		GridBagConstraints gbc_btnRemoveProfile = new GridBagConstraints();
-		gbc_btnRemoveProfile.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnRemoveProfile.gridwidth = 2;
-		gbc_btnRemoveProfile.insets = new Insets(5, 10, 5, 10);
-		gbc_btnRemoveProfile.gridx = 0;
-		gbc_btnRemoveProfile.gridy = 4;
-		pnlOptions.add(btnRemoveProfile, gbc_btnRemoveProfile);
+		btnRemoveProfile.setBounds(13, 144, 127, 23);
+		pnlOptions.add(btnRemoveProfile);
+
+		// Creation of that one random label I have and I'm not sure if I'll use it or not
+
+		JLabel lblRightPanelImage = new JLabel("");
+		lblRightPanelImage.setIcon(new ImageIcon(userDirectory + "\\src\\Data\\images\\panelImageRight.png"));
+		lblRightPanelImage.setBounds(3, 3, 146, 344);
+		pnlOptions.add(lblRightPanelImage);
+		lblRightPanelImage.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 
 
 		/* ------------------------------------------------------------------------------
@@ -991,7 +898,7 @@ public class mainGUI extends JFrame {
 		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			keyboardImage = new ImageIcon(userDirectory + "\\src\\data\\keyboard.png").getImage();
+			keyboardImage = new ImageIcon(userDirectory + "\\src\\data\\images\\keyboard.png").getImage();
 			g.drawImage(keyboardImage, 0, 0, getWidth(), getHeight(), this);
 
 			// Draw all rectangles in the list
