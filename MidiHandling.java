@@ -114,7 +114,6 @@ public class MidiHandling {
 			int key = byteToInt(bytes[1]);
 			// If the action detected is a keypress add it to activeKeys
 			if (bytes[2] == 100 && !activeKeys.contains(key)) {
-				System.out.println("Key number: " + key);
 				activeKeys.add(key);
 			}
 			// If the action detected is a key being raised then it is added to keysToRemove
@@ -208,7 +207,22 @@ public class MidiHandling {
 									int keyCode = Integer.valueOf(keyControls[i][1]);
 									keyHandling(keyCode, true);
 									pressedKeys.add(currentKey);
-									mainGUI.insertText(KeyEvent.getKeyText(keyCode));
+									if (keyCode > 1000) {
+										switch(keyCode) {
+										case 1024:
+											mainGUI.insertText("Mouse_1");
+											break;
+										case 2048:
+											mainGUI.insertText("Mouse_2");
+											break;
+										case 4096:
+											mainGUI.insertText("Mouse_3");
+											break;
+										}
+									}
+									else {
+										mainGUI.insertText(KeyEvent.getKeyText(keyCode));
+									}
 									triggeredChords.add(currentCode);
 									break;
 								}
