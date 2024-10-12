@@ -194,44 +194,18 @@ public class MidiHandling {
 		private static void pressKeys() {
 			for (Integer currentKey : activeKeys) { // For each currently pressed key
 				if (!pressedKeys.contains(currentKey)) {
-					boolean chordTriggered = false;
 					for (int i = 0; i < keyControls.length; i++) { // Go through each item in the config
 
 						String currentCode = keyControls[i][0];
 
 						// Check if the activeKey can be part of a chord
-						if (currentCode.contains(currentKey.toString())) {
-							if (isCompleteChord(currentCode, currentKey)) {
-								if (!triggeredChords.contains(currentCode)) {
-									chordTriggered = true;
-									int keyCode = Integer.valueOf(keyControls[i][1]);
-									keyHandling(keyCode, true);
-									pressedKeys.add(currentKey);
-									if (keyCode > 1000) {
-										switch(keyCode) {
-										case 1024:
-											mainGUI.insertText("Mouse_1");
-											break;
-										case 2048:
-											mainGUI.insertText("Mouse_2");
-											break;
-										case 4096:
-											mainGUI.insertText("Mouse_3");
-											break;
-										}
-									}
-									else {
-										mainGUI.insertText(KeyEvent.getKeyText(keyCode));
-									}
-									triggeredChords.add(currentCode);
-									break;
-								}
-							}
+						if (currentCode.contains(currentKey.toString()) && isCompleteChord(currentCode, currentKey) && !triggeredChords.contains(currentCode)) {
+							int keyCode = Integer.valueOf(keyControls[i][1]);
+							keyHandling(keyCode, true);
+							pressedKeys.add(currentKey);
+							triggeredChords.add(currentCode);
+							break;
 						}
-					}
-					// Handle the case where the chord is not fully complete yet
-					if (chordTriggered) {
-						// Additional handling if needed
 					}
 				}
 			}
@@ -272,19 +246,40 @@ public class MidiHandling {
 			// After determining mouse or key it will use isPress to determine to either raise or lower the key
 			if (keyCode >= 1000) {
 				if (isPress) {
-					robot.mousePress(keyCode);			
+					robot.mousePress(keyCode);
+					mainGUI.insertText(getMouseNumber(keyCode) + " Pressed");
+					
 				} else {
 					robot.mouseRelease(keyCode);
+					System.out.println("Releasing");
+					mainGUI.insertText(getMouseNumber(keyCode) + " Released");
 				}
 			} 
 			else {
 				if (isPress) {
 					robot.keyPress(keyCode);
+					mainGUI.insertText(KeyEvent.getKeyText(keyCode) + "Pressed");
 				} else {
 					robot.keyRelease(keyCode);
+					mainGUI.insertText(KeyEvent.getKeyText(keyCode) + "Released");
 				}
 			}
 		}
+	}
+	
+	// A function to check what mouse number a code represents
+	
+	private static String getMouseNumber(int keyCode) {
+		switch(keyCode) {
+		case 1024:
+			return("Mouse_1");
+		case 2048:
+			return ("Mouse_2");
+		case 4096:
+			return("Mouse_3");
+		}
+		// In case the code isn't one of these three, just return null to handle any errors
+		return null;
 	}
 	
 	public static void updateKeyConfig() {
