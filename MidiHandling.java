@@ -260,10 +260,10 @@ public class MidiHandling {
 			else {
 				if (isPress) {
 					robot.keyPress(keyCode);
-					mainGUI.insertText(KeyEvent.getKeyText(keyCode) + "Pressed");
+					mainGUI.insertText(KeyEvent.getKeyText(keyCode) + " Pressed");
 				} else {
 					robot.keyRelease(keyCode);
-					mainGUI.insertText(KeyEvent.getKeyText(keyCode) + "Released");
+					mainGUI.insertText(KeyEvent.getKeyText(keyCode) + " Released");
 				}
 			}
 		}
@@ -274,11 +274,11 @@ public class MidiHandling {
 	private static String getMouseNumber(int keyCode) {
 		switch(keyCode) {
 		case 1024:
-			return("Mouse_1");
+			return("Mouse1");
 		case 2048:
-			return ("Mouse_2");
+			return ("Mouse2");
 		case 4096:
-			return("Mouse_3");
+			return("Mouse3");
 		}
 		// In case the code isn't one of these three, just return null to handle any errors
 		return null;
