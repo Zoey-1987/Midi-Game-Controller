@@ -175,7 +175,6 @@ public class MidiHandling {
 		private static void removeKeysFromArrays() {
 			// For each key that is being removed
 			for (Integer keyNumber : keysToRemove) {
-				Object[] test = triggeredChords.toArray();
 				// Go through each key in the config
 				for (int i = 0; i < keyControls.length; i++) {
 					String currentCode = keyControls[i][0]; // currentCode is the current config line being looked at
@@ -251,12 +250,10 @@ public class MidiHandling {
 			if (keyCode >= 1000) {
 				if (isPress) {
 					robot.mousePress(keyCode);
-					System.out.println("Pressing");
 					mainGUI.insertText(getMouseNumber(keyCode) + " Pressed");
 					
 				} else {
 					robot.mouseRelease(keyCode);
-					System.out.println("Releasing");
 					mainGUI.insertText(getMouseNumber(keyCode) + " Released");
 				}
 			} 
