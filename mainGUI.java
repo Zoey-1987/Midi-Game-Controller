@@ -63,8 +63,6 @@ public class mainGUI extends JFrame {
 				try {
 					mainGUI frame = new mainGUI();
 					frame.setVisible(true);
-					System.out.println("Key Pressed: " + KeyEvent.getKeyText(32));
-					System.out.println("Mouse Pressed: " + MouseEvent.getModifiersExText(1024));
 					MidiHandling.run();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -226,23 +224,12 @@ public class mainGUI extends JFrame {
 		pnlMain.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
 		pnlMain.setLayout(null);
 		GridBagConstraints gbc_pnlMain = new GridBagConstraints();
-		gbc_pnlMain.gridwidth = 17;
+		gbc_pnlMain.gridwidth = 15;
 		gbc_pnlMain.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlMain.fill = GridBagConstraints.BOTH;
 		gbc_pnlMain.gridx = 1;
 		gbc_pnlMain.gridy = 1;
 		mainPanel.add(pnlMain, gbc_pnlMain);
-
-		// Creation of the random text box that goes with it
-
-		txtRandomTextBox = new JTextArea();
-		txtRandomTextBox.setForeground(Color.BLACK);
-		txtRandomTextBox.setOpaque(false);
-		txtRandomTextBox.setBorder(null);
-		txtRandomTextBox.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		txtRandomTextBox.setBounds(424, 64, 87, 121);
-		pnlMain.add(txtRandomTextBox);
-		txtRandomTextBox.setRows(1);
 
 		JLabel lblTitle = new JLabel("");
 		lblTitle.setIcon(new ImageIcon(userDirectory + "\\src\\data\\images\\title.png"));
@@ -359,12 +346,6 @@ public class mainGUI extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				Integer theKey = selectedKey;
 				demoKeysList = getDemoKeys(theKey.toString());
-				try {
-					for (int item: demoKeysList) {}
-				}
-				catch(NullPointerException k) {
-					JOptionPane.showMessageDialog(null, "Please provide an input using the buttons\nabove, and assure this key is bound", "Error", JOptionPane.ERROR_MESSAGE);
-				}
 			}
 
 			@Override
@@ -394,8 +375,6 @@ public class mainGUI extends JFrame {
 		});
 
 
-
-
 		/* ------------------------------------------------------------------------------
 		 * The code for the creation of all object related to the right hand panel
 		 ------------------------------------------------------------------------------ */
@@ -408,10 +387,10 @@ public class mainGUI extends JFrame {
 		pnlOptions.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 0, 0)));
 		pnlOptions.setLayout(null);
 		GridBagConstraints gbc_pnlOptions = new GridBagConstraints();
-		gbc_pnlOptions.gridwidth = 3;
+		gbc_pnlOptions.gridwidth = 5;
 		gbc_pnlOptions.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlOptions.fill = GridBagConstraints.BOTH;
-		gbc_pnlOptions.gridx = 18;
+		gbc_pnlOptions.gridx = 16;
 		gbc_pnlOptions.gridy = 1;
 		mainPanel.add(pnlOptions, gbc_pnlOptions);
 
@@ -419,7 +398,7 @@ public class mainGUI extends JFrame {
 
 		JLabel lblProfilesTitle = new JLabel("");
 		lblProfilesTitle.setIcon(new ImageIcon(userDirectory + "\\src\\Data\\images\\Profiles.png"));
-		lblProfilesTitle.setBounds(8, 12, 139, 21);
+		lblProfilesTitle.setBounds(10, 12, 190, 28);
 		lblProfilesTitle.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 		pnlOptions.add(lblProfilesTitle);
 
@@ -437,7 +416,7 @@ public class mainGUI extends JFrame {
 
 		JComboBox<String> cbbProfiles = new JComboBox<>();
 		cbbProfiles.setFont(new Font("Tahoma", Font.BOLD, 12));
-		cbbProfiles.setBounds(13, 44, 127, 22);
+		cbbProfiles.setBounds(29, 64, 147, 22);
 		File directory = new File(userDirectory + "\\src\\data\\");
 		updateDropBox(directory, cbbProfiles);
 		pnlOptions.add(cbbProfiles);
@@ -445,26 +424,45 @@ public class mainGUI extends JFrame {
 		// Creation of the refresh button
 
 		JButton btnRefresh = new JButton("Refresh");
-		btnRefresh.setBounds(13, 76, 127, 23);
+		btnRefresh.setBounds(29, 97, 147, 23);
 		pnlOptions.add(btnRefresh);
 
 		// Creation of the add new profile button
 
 		JButton btnAddNewProfile = new JButton("Add New Profile");
-		btnAddNewProfile.setBounds(13, 110, 127, 23);
+		btnAddNewProfile.setBounds(29, 131, 147, 23);
 		pnlOptions.add(btnAddNewProfile);
 
 		// Creation of the remove profile button
 
 		JButton btnRemoveProfile = new JButton("Delete Profile");
-		btnRemoveProfile.setBounds(13, 144, 127, 23);
+		btnRemoveProfile.setBounds(29, 165, 147, 23);
 		pnlOptions.add(btnRemoveProfile);
+		
+		// Creation of a button to toggle the key logger visibility
+
+		JButton btnShowKeyStrokes = new JButton(" Key Visibility");
+		btnShowKeyStrokes.setToolTipText("This button will toggle the visibility of a key logger below the button");
+		btnShowKeyStrokes.setBounds(29, 199, 147, 23);
+		pnlOptions.add(btnShowKeyStrokes);
+
+		// Creation of the random text box that goes with it
+
+		txtRandomTextBox = new JTextArea();
+		txtRandomTextBox.setVisible(false);
+		txtRandomTextBox.setBounds(29, 233, 147, 101);
+		pnlOptions.add(txtRandomTextBox);
+		txtRandomTextBox.setForeground(Color.WHITE);
+		txtRandomTextBox.setOpaque(false);
+		txtRandomTextBox.setBorder(null);
+		txtRandomTextBox.setFont(new Font("Tahoma", Font.BOLD, 16));
+		txtRandomTextBox.setRows(1);
 
 		// Creation of that one random label I have and I'm not sure if I'll use it or not
 
 		JLabel lblRightPanelImage = new JLabel("");
 		lblRightPanelImage.setIcon(new ImageIcon(userDirectory + "\\src\\Data\\images\\panelImageRight.png"));
-		lblRightPanelImage.setBounds(3, 3, 146, 344);
+		lblRightPanelImage.setBounds(3, 3, 206, 344);
 		pnlOptions.add(lblRightPanelImage);
 		lblRightPanelImage.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 
@@ -523,6 +521,19 @@ public class mainGUI extends JFrame {
 				File newFile = new File(directory + "\\" + cbbProfiles.getSelectedItem() + ".txt");
 				profileHandling(newFile, btnRemoveProfile, false);
 				updateDropBox(directory, cbbProfiles);
+			}
+		});
+		
+		// Toggle key stroke visibility
+		
+		btnShowKeyStrokes.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(txtRandomTextBox.isVisible()) {
+					txtRandomTextBox.setVisible(false);
+				} else {
+					txtRandomTextBox.setVisible(true);
+				}
 			}
 		});
 
@@ -612,7 +623,7 @@ public class mainGUI extends JFrame {
 			myReader.close();
 			return fileText;
 		} 
-		catch (FileNotFoundException e) {System.out.println("File not found");}
+		catch (FileNotFoundException e) {}
 		return fileText;
 	}
 
@@ -625,7 +636,7 @@ public class mainGUI extends JFrame {
 			}
 			myWriter.close();
 		} 
-		catch (FileNotFoundException e) {System.out.println("File not found");} 
+		catch (FileNotFoundException e) {} 
 		catch (IOException e) {e.printStackTrace();}
 	}
 
@@ -651,6 +662,8 @@ public class mainGUI extends JFrame {
 
 	}
 
+	// Function to retrieve all the key config options from the text file
+	
 	public static String[][] getKeyConfigArray() {
 		// The program will try to open the associated file and will throw an error if it can't be found
 		List<String> textFileContents = readFile(configFile);
@@ -658,14 +671,17 @@ public class mainGUI extends JFrame {
 		String[][] keyControls = new String[numberOfLines][2];
 		// For each line in the text file
 		for (int i = 0; i < numberOfLines; i++) {
+			// Split the line at the comma, as it contains the midi key on the left and the key code on the right
 			String regex = "[,]";
 			String[] lineData = textFileContents.get(i).split(regex);
-			keyControls[i][0] = lineData[0];
-			keyControls[i][1] = lineData[1];
+			keyControls[i][0] = lineData[0]; // Store midi data
+			keyControls[i][1] = lineData[1]; // Store key data
 		}
 		return keyControls;
 	}
 
+	// Set all config settings to the selected text file
+	
 	public static void setConfigFile(File config) {
 		configFile = config;
 	}
@@ -734,6 +750,9 @@ public class mainGUI extends JFrame {
 		dialog.setVisible(true);
 	}
 
+	
+	// Function to get the midi keys bound to the selected pc key and overlay them onto the keyboard visual
+	
 	public static List<Integer> getDemoKeys(String keyCodeSearch) {
 		String[][] configArray = getKeyConfigArray();
 		List<Integer> demoKeys = new ArrayList<Integer>();
