@@ -1,16 +1,7 @@
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import java.awt.Toolkit;
-import java.awt.Color;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import javax.swing.JButton;
-import java.awt.Insets;
-import java.awt.Rectangle;
-
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -267,8 +258,8 @@ public class mainGUI extends JFrame {
 		// Creation of the selected input text field
 
 		JTextField txtSelectedInput = new JTextField();
-		txtSelectedInput.setForeground(Color.PINK);
-		txtSelectedInput.setFont(new Font("Arial Black", Font.PLAIN, 28));
+		txtSelectedInput.setForeground(Color.WHITE);
+		txtSelectedInput.setFont(new Font("Divi", Font.PLAIN, 28));
 		txtSelectedInput.setBorder(null);
 		txtSelectedInput.setOpaque(false);
 		txtSelectedInput.setEditable(false);
@@ -884,7 +875,7 @@ public class mainGUI extends JFrame {
 
 		private List<Rectangle> whiteRectangles = new ArrayList<>();  // Initialize the list of white rectangles
 		private List<Rectangle> blackRectangles = new ArrayList<>();  // Initialize the list of black rectangles
-		private List<Rectangle> redRectangles = new ArrayList<>(); // Initiialize the list of red rectangles
+		private List<Rectangle> magRectangles = new ArrayList<>(); // Initiialize the list of red rectangles
 		private Image keyboardImage;
 
 		public DrawingPanel() {
@@ -904,14 +895,14 @@ public class mainGUI extends JFrame {
 
 		// Add a black rectangle to the list
 		public void addRedRectangle(Rectangle rect) {
-			redRectangles.add(rect);
+			magRectangles.add(rect);
 		}
 
 		// Clear all rectangles (to update for new keys)
 		public void clearRectangles() {
 			whiteRectangles.clear();
 			blackRectangles.clear();
-			redRectangles.clear();
+			magRectangles.clear();
 		}
 
 		@Override
@@ -927,8 +918,8 @@ public class mainGUI extends JFrame {
 
 				g.fillRect(rect.x, rect.y, rect.width, rect.height);
 			}
-			for (Rectangle rect : redRectangles) {
-				g.setColor(Color.RED);
+			for (Rectangle rect : magRectangles) {
+				g.setColor(Color.MAGENTA);
 				// Draw the rectangle
 				g.fillRect(rect.x, rect.y, rect.width, rect.height);
 			}
