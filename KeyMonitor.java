@@ -23,7 +23,6 @@ public class KeyMonitor extends Thread {
     }
     
     
-
     public void run() {
 		try {
 			robot = new Robot();
