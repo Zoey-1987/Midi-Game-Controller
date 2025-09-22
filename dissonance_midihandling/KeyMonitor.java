@@ -3,6 +3,7 @@ package dissonance_midihandling;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +16,12 @@ import java.util.List;
 
 public class KeyMonitor extends Thread {
     private final MidiKeyHandler handler;
+    private final String configFileName;
 	private Robot robot;
-	private String userDirectory = System.getProperty("user.dir");
 
-    public KeyMonitor(MidiKeyHandler handler) {
+    public KeyMonitor(MidiKeyHandler handler, String configFileName) {
         this.handler = handler;
+        this.configFileName = configFileName;
     }
     
     
@@ -29,7 +31,7 @@ public class KeyMonitor extends Thread {
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
-    	LoadKeybinds load = new LoadKeybinds(userDirectory + "\\src\\Data\\config.txt");
+    	LoadKeybinds load = new LoadKeybinds(configFileName);
 		List<Keybind> keybinds = new ArrayList<>(load.readKeybinds());
         while (true) {
             List<Integer> keys = handler.getPressedKeys();
